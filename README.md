@@ -151,15 +151,52 @@
 * Once again open setting of VM and network and change to hostonly option after some time ping -t <vm_ip> can be connected.
 * Change root password to the required and reboot the VM.
 
+#### Linux basic commands:
+* On a professional network we will be having VPN from client to server we have to connect with VPN and the seerver network/ datacenter network will be accessed there after.
+* To connect from local with server IP we will use some softwares like putty/ Mobaxterm/ sshCleient,..
   
+      ping -t <server_ip>   checks if the server is up and running or not.
+      whoami    Loggedin user name
+      pwd       print working diredtory
+      ctrl + d  exit the session
+      date      print today's date
+      cal       print calender
+      ls        print all files/ directories
+      ls -l     print the filee/ directories in long format
+      ls -l <file_name>   print properties of the file
+      ls -ld  <file_name>  print properties of the directory
+      cd ..     to gho back one step back in the server cli
+      ls <directory_name> diplays the files inside the directory
+      cd <directory>     to login to the directory.
+  
+      nsivareddy@X-J3PVH32KM4 ~ % ls -l
+      total 6
+      -rw-r--r--@  1 nsivareddy  staff     7191  7 Oct 21:50 automated_cert_renewal.sh
+      drwxr-xr-x   4 nsivareddy  staff      128 21 Oct 06:00 bin
 
-
-
-
-
-
-
-
+* The name of the file will be black color but folder will be in blue color.
+* If a file starts with `-` while directory starts with `d`.
+* `drwxr-xr-x` are file /folder permissions & `4` is called as links.
+* `nsivareddy` is user and  `staff` is group.
+* `7191` is size of the file and `7 Oct 21:50` file or folder creation date.
+##### Create a file in Linux:
+* `cat`(Concatenate) command is used to create a file and to display and modify the contents of a file.
+  
+        cat > filename(say myfile)
+        hello world
+  * crtl + d (to save the file). If we have existing file with the same name `cat` command `replace the existing` and if thre is no file it will create a new file.
+  * We can go to above lines one we enter to the next lines.
+    
+        nsivareddy@X-J3PVH32KM4 ~ % cat > myfile
+        hello world 
+        ^C
+        nsivareddy@X-J3PVH32KM4 ~ % cat myfile 
+        hello world
+* `touch` command creates an empty file. When we recreate a file or directory it won't change the exiting but if not exits it create file/ directory.
+* If want to create multiple empty files.
+  touch <file_name> <file_name> <file_name>
+  touch file1 file2 file3
+  touch file{1..100}  create files wilth file1, file2,.. file100
 
 
   
