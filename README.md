@@ -110,6 +110,47 @@
   * Whenever we installl some software some libraries will be installed.
     
 * Config file store the information that how you want to use certain software or application and all these config files are stored under /etc.
+
+### RHEL Installation:  
+  <img width="595" height="220" alt="image" src="https://github.com/user-attachments/assets/77d2e946-ebb0-4600-bfc7-a75acb3713f0" />
+  
+* Oracle Virtualbox works based on KVM(Kernerl Virtual Machine)
+
+* We need to check the minimum/recommended configuration to install RHEL7/8.
+* Dual core processor is a single physical processor but logically it beahave like two. Quad Core one physical but behaves like 4 CPU.
+* Processors can be of 32 bit and 64 bit based on the processor the data processing speed will change bu to work with virtualization we need to have 64 bit architecture.
+* During the installation we need atleast 3 partitions. `/(root)`, `/boot`,`SWAP`.
+  * `/` sould have most of the memory. Since everything starts with this root directory only.20-30 GB recommended.
+  * `/boot` is immediately required at the time of booting even before root directory. 1 GB
+  * `SWAP` is needed to support RAM, which should be twice of RAM approx preferred. Twice the RAM approx.
+* While installing RHEL in windows we use host based hypervisor ie we need to have installed an OS on the hardware and we are installing OracleVirtual box on the top of ity we are installing Virtual Machines(VM).
+* Incase of production environment full virtualization is used which is called as `Bare Metal Hypervisor` or `type1` hypervisor.
+* In Bare Metal on the top of physical machine virtualization softwares like `ESXI`,`Citrix Z`,.. on the top of it VMs are created.
+*  We need to have vitualization enabled in windows, we can check this from task manager --> performance --> virtualization (enable). If not enabled it will not allow to use 64 bit linux VM, only provides32 bit windows.
+   <img width="834" height="445" alt="image" src="https://github.com/user-attachments/assets/9b67834b-7886-45a3-8a0b-031a3f7432c2" />
+   <img width="865" height="437" alt="image" src="https://github.com/user-attachments/assets/9e3d03c7-45c6-452a-9a08-4e9e4291b59d" />
+
+
+* While installing OS in windows we will change settings in bios setting the first bootable device is CD but in VM we need to open VM settings.
+* Under VM settings open processor update the processor to 2 core and under mother board there wil be boot order available ie floppy, CD, HardDisk, Network. Change the order Optical< HArd Disk, Network.
+* Update the pointing Device from the mother board to USB Tablet or USB multi Touch Tablet.
+* We will share ISO image instead of DVD from storage section and upload ISO image by selecting DVD option.
+* We can use mouse by clicking on the VM screen, the mouse to come out of VM use right hand side `ctrl` key to work with computer.
+* Anaconda is an installer with the help of which we install RHEL.
+  
+   <img width="855" height="438" alt="image" src="https://github.com/user-attachments/assets/cded11e5-90b1-4771-a6c8-32bc196d2b3f" />
+   <img width="940" height="398" alt="image" src="https://github.com/user-attachments/assets/25be02fe-b3be-44f4-88ab-21052976f67f" />
+
+* Installation destination is the partition where the OS need to be installed, storage configuration (auto / custom). If auto is selected entire allocated 30GB will be devided into default partition. We will have standard / LVM partition.
+* Select standard and click `+` to make partitions, add `/` with required in `G`(GB), `/boot` and `swap` partitions.
+* KDUMP is a kenrel crash dumping mechanism, in the event of system crash, it capture the information from your system that can be invaluable in determining the cause of crash. It need a portion systems memory to reseve that is not avaible for other users. It should be allowed memory auto allocation
+* Networking--> provide a name, select some ethernet adaptor and config -->under general --> connect automatically (If we don't select the system will bppt every time the adaptor will be down).
+* Under IPVersion4 settings --> Automatic (DHCP) by default but we can change it by selecting manual option and provide an IP like 198.168.10.70 and press `tab` key Netmnask will be selected and save.
+* Click on ON beside the Ethernet (enpox3). it will provide an ip.4
+* From the start of the VM file option we need to change host netork manager, in the ptoperties section change IPv4 adrress in the same range of VM and save.
+* Once again open setting of VM and network and change to hostonly option after some time ping -t <vm_ip> can be connected.
+* Change root password to the required and reboot the VM.
+
   
 
 
