@@ -197,6 +197,201 @@
   touch <file_name> <file_name> <file_name>
   touch file1 file2 file3
   touch file{1..100}  create files wilth file1, file2,.. file100
+#### Creating a Directory:
+* `mkdir <file name
 
-
+       mkdir mydir        mydir directory is created
+       mkdir d1 d2 d3     multiple directories are created
+       mkdir mydir{1..5}  multiple directories with the range will be created
+       cd .. / ..         to go back to two steps back
+       cd                 will bring to root(`/`) directory
+       cd -               will bring back to the last opended directory
   
+* If we try to create a directory with the same name it will through error that `directory exists`. mkdir won't override.
+
+      X-J3PVH32KM4:~ root# mkdir mydir
+      X-J3PVH32KM4:~ root# cd mydir/
+      X-J3PVH32KM4:mydir root# mkdir mydir{1..5}
+      X-J3PVH32KM4:mydir root# ls
+      mydir1	mydir2	mydir3	mydir4	mydir5
+      X-J3PVH32KM4:mydir root# pwd     
+      /var/root/mydir
+      X-J3PVH32KM4:mydir root# cd mydir1
+      X-J3PVH32KM4:mydir1 root# pwd
+      /var/root/mydir/mydir1
+    
+* Absoulyte path is the complete path from `/`(root) directory.
+* To moveforward to multiple directories in forward we need to use `cd mydir/mydir1`. Use Tab key to open the next directory and proceed.
+* `mkdir -p main/sub` this will create a sub directory in main directory, here `p` stands for parent directory. If main directory already existing i will not do anything for main but creates a child directory `sub`.
+* `mkdir -p main/sub2` it will create a `sub2` directory inside the existing main directory.
+* `mkdir -p park/{table,bench,trees}` it will create `lion`, `leopard` and `tiger` sub directories with in main directory.
+
+      X-J3PVH32KM4:~ root# mkdir -p park/{table,bench,trees}
+      X-J3PVH32KM4:~ root# cd park/
+      X-J3PVH32KM4:park root# ls
+      bench	table	trees
+* To create directories inside directories.
+  
+      X-J3PVH32KM4:~ root# mkdir -p world/{IND/{BANG,HYD},AUS/{SYD>MEL},USA/{NY,NJ}}
+      X-J3PVH32KM4:~ root# ls world/
+      AUS	IND	USA
+      X-J3PVH32KM4:~ root# cd world/
+      X-J3PVH32KM4:world root# ls IND/
+      BANG	HYD
+      X-J3PVH32KM4:world root# ls AUS/
+      MEL	SYD
+      X-J3PVH32KM4:world root# ls USA/
+      NJ	NY
+* `tree world` View the directory in tree form
+
+      X-J3PVH32KM4:~ root# tree world/
+      world/
+      |-- AUS
+      |   |-- MEL
+      |   `-- SYD
+      |-- IND
+      |   |-- BANG
+      |   `-- HYD
+      `-- USA
+          |-- NJ
+          `-- NY
+
+      10 directories, 0 files
+* `ls -R world` recurssive/iterate displays the all the subdirectories in the main directory.
+
+        X-J3PVH32KM4:~ root# ls -R world/
+        AUS	IND	USA
+        
+        world/AUS:
+        MEL	SYD
+        
+        world/AUS/MEL:
+        
+        world/AUS/SYD:
+        
+        world/IND:
+        BANG	HYD
+        
+        world/IND/BANG:
+        
+        world/IND/HYD:
+        
+        world/USA:
+        NJ	NY
+        
+        world/USA/NJ:
+        
+        world/USA/NY:
+#### Copying files to a directory:
+* `cp <source> <destination directory in which to paste the file>` copy a file from one location to destination directory
+* `cp file1, file2, file3 main` copies file1,file2 and file3 to main directory.
+* `cp file{1,2,3} main` if there are files in a sequential name.
+
+        X-J3PVH32KM4:~ root# cp file1 main
+        X-J3PVH32KM4:~ root# ls main/
+        file1
+* If there is existing file in the same directory it will ask if it need to over rider with `y` option to proceed to replace or `n` to abort.
+
+#### Copying a directory to anothe directory:
+* we need to use `-r` while copying directory mandatorily. 
+* `-v` verbose display what is copiing
+* `-f` copy the data forcefully
+* `-p` to preserve the permissions and and paste.
+  
+       cp -r main zoo         copies main directory to zoo directory
+       cp -r 1 2 3 main       copies 1,2,3 directories to main directory
+#### Move file from one location to another (cut and paste):
+* It will cut the original file completely and put in some other location
+* `mv <filename> <Destination Directory>`
+* `mv myfile mydir`   Move file1 to mydir directory.
+* `mv dir1 newdir`  it will cut the directory from source to destination directory, no need to use `-r` flag.
+* `-i` interactive mode which prompts beore overwriting.
+
+        X-J3PVH32KM4:~ root# ls
+        .CFUserTextEncoding	Library			main			tiger,
+        .bash_history		file1			mydir			world
+        .forward		leopard}		park			zoo
+   
+        X-J3PVH32KM4:~ root# mv file1 mydir/
+        X-J3PVH32KM4:~ root# ls
+        .CFUserTextEncoding	Library			mydir			world
+        .bash_history		leopard}		park			zoo
+        .forward		main			tiger,
+   
+        X-J3PVH32KM4:~ root# ls mydir/
+        file1	mydir1	mydir2	mydir3	mydir4	mydir5
+* To rename also we will use `mv` command it self.
+* mv <curent name> <new name>
+* In the background it is copying the file contents to new file i ebn through it is rename the file.
+* If the new name which we want to change exists then it moves the content, if not exists it will rename the file.
+
+#### Removinga file:
+* `rm filename` or `rm -f filename`(without prompting)
+* Unlike in windowds recyle bin there is no directory to restore the deleted files/directories.
+* To delete multiple files use `rm -rf file1 file2` 
+
+        X-J3PVH32KM4:~ root# rm file1
+        X-J3PVH32KM4:~ root# ls   
+        .CFUserTextEncoding	Library			mydir			world
+        .bash_history		file2			park			zoo
+        .forward		main			tiger,
+#### Remove directory:
+* `rmdir directoryName` removed the directory.
+*  We can't delete non empty directory with `rmdir` command need to remove the directories with in the main directory and delete main directory at last.
+* use `rmdir -rf directory` to remove directory recurssively.
+  
+        X-J3PVH32KM4:~ root# rmdir zoo/
+        rmdir: zoo/: Directory not empty
+        X-J3PVH32KM4:~ root# rm -rf zoo
+        X-J3PVH32KM4:~ root# ls
+        .CFUserTextEncoding	.forward		main			park			world
+        .bash_history		Library			mydir			tiger,
+  
+* If we want to delete all files or directories use `rm -rf *`, here `*` means all.
+        X-J3PVH32KM4:test root# ls
+        dir1	dir2	dir4	dir6	dir8	file1	file2	file4	file6	file8
+        dir10	dir3	dir5	dir7	dir9	file10	file3	file5	file7	file9
+        X-J3PVH32KM4:test root# rm -rf *
+        X-J3PVH32KM4:test root# ls
+        X-J3PVH32KM4:test root# 
+* If we want to delete files in side a particular directory use `rm -rf main/*`
+* `mv mydir/file1 root`  movee file1 to root directory
+* `mv mydir/file1 .`  move the file to current directory `.` is curent location
+
+        poweroff --> shutdown the machine
+        reboot   --> reboot the machine
+### VIM Editor:
+* Vim is command mosde editor for files, other editors in Linux are emacs, nano and gefit.
+* Vim has 3 modes: Command Mode, Insert mode(edit mode), extented command mode.
+* When you open the vim editor, it will be in the command mode by default.
+* In command mode the cursor's can be used as `h/l/k/j` to move `left/right/up/down`.
+* **Insert Mode**:
+  
+        i to bring insert mode at the cursor position
+        I to insert at the begining of the line
+        a to append to the next word's letter
+        A to appenf at the end of the line
+        o to insert new line below the cursor position
+        O to insert a new line above the cursor position
+  
+* `vi filename`, it will open in read only mode, if we want to modify/ update the file press `i`(insert) mode and to save `esc+:!wqa` save and exit.
+* If we don't want to save changes and exit `esc+ q!`
+* **Command Mode**:
+  
+        gg    to go to the beginning of the line
+        G     to go to the end of the file
+        w     to move the cursor forard, word by word
+        b     to move the cursor backward, word by word
+        nw    to move the cursor forward to n words(5W)
+        u     to undo last change (word)
+        U     to undo the previous change (entire line)
+        Ctrl + R to redo changes
+        yy    to copy a line
+        nyy   to copy n lines(5yy or 4yy)
+        p     to paste line below the cursor position
+        P     to paste line above the cursor position.
+        dw    to delete word letter by letter (like Backspace)
+        x     to delete the word letter by letter (like Del key)
+        dd    to delete entire line
+        ndd   to delete n no.of lines from cursor position(5dd)
+        /      to search a qord in the file  
