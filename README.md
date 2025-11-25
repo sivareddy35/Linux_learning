@@ -192,6 +192,7 @@
         ^C
         nsivareddy@X-J3PVH32KM4 ~ % cat myfile 
         hello world
+* `cat -n filename` it will diplays the file with numbers in each line but these numbers are not saved.
 * `touch` command creates an empty file. When we recreate a file or directory it won't change the exiting but if not exits it create file/ directory.
 * If want to create multiple empty files.
   touch <file_name> <file_name> <file_name>
@@ -364,7 +365,9 @@
 * Vim is command mosde editor for files, other editors in Linux are emacs, nano and gefit.
 * Vim has 3 modes: Command Mode, Insert mode(edit mode), extented command mode.
 * When you open the vim editor, it will be in the command mode by default.
-* In command mode the cursor's can be used as `h/l/k/j` to move `left/right/up/down`.
+* In command mode the cursor's can be used as `h/l/k/j` to move `left/right/up/down
+* We can create a file and edict a file. If there is no file with that name it will create a file open in edit mode but if the file exiting it open the file in edit mode.
+  
 * **Insert Mode**:
   
         i to bring insert mode at the cursor position
@@ -386,7 +389,7 @@
         u     to undo last change (word)
         U     to undo the previous change (entire line)
         Ctrl + R to redo changes
-        yy    to copy a line
+        yy    to copy a line (y is yanking)
         nyy   to copy n lines(5yy or 4yy)
         p     to paste line below the cursor position
         P     to paste line above the cursor position.
@@ -394,4 +397,80 @@
         x     to delete the word letter by letter (like Del key)
         dd    to delete entire line
         ndd   to delete n no.of lines from cursor position(5dd)
-        /      to search a qord in the file  
+        /      to search a qord in the file but it is case sensitive 
+  * If want to delete anyline use `dd` and don't use `p` or `P`, after `dd` command if we use `p` or `P` it will paste the lines deleted.
+  * `/` and type a word you want to search but it is case sensitive and to move to the next matching word need to press `n` to go to sequence of searches.
+* `Extended Mode:(Colon Mode)`:
+* Extended mode is used for save and quit or save without quit using `Esc`key with `:`.
+* We can move to a specific line number with `Esc+:10` the cursor will move to the start of line number 10 and if we search the more than the available lines in the file the cursor move to the start of the last line.
+
+        Esc+:w       To save the changes but still in the editor
+        Esc+:q       To quit (without saving)
+        Esc+:wq      To save and quit
+        Esc+wq!      To save and quit forcefully
+        Esc+x        To save and quit
+        Esc+X        To give password to the file and remove password, data is encrypted. There is no way to recover password
+        Esc+:20(n)   To go to line no 20 or n
+        Esc+:se nu    To set the line numbers to the file
+        Esc+:se nonu  To Remove the set line numbers
+* Once we save a file with `Esc+X` encryption there is no way to recover it and we can remove the password after login `Esc+X` and don't enter password (just enter + enter).
+
+        nsivareddy@X-J3PVH32KM4 practice % vi test.txt 
+        nsivareddy@X-J3PVH32KM4 practice % cat test.txt 
+        VimCrypt~03!O?_???????g#vs@??
+        ])?c?݌l"??>_?????2?F???}9k`vf???^Ù????O?p?.~ּ[
+                                                     /ޱ????~쌜X?:Jc{?C??sy???oHD?J?#????ݽZ??}???<?????5v??'??P?|
+                                                                                                                ?F?Ѽ?K6䢊ʫC=
+        Bf?{P?????t????*|????e}<?4[?????G?G?j?A?%                                                                                                     nsivareddy@X-J3PVH32KM4 practice % 
+
+* To open multiple files in vim editor
+  
+      vim -o file1 file2
+    * To switch between files use `Ctl+w`.
+* `vim -o file1 file2` this open an editor with the two files witin the same editor.
+* This wil be helpful when we want to compare and want to copy some lines from one to another. By pressing `Ctl+w` twice we can switch these two files and do copy and paste.
+* We can save the files `Esc+wq!` if we are copying file from 1st to second, `Esc+wq!` will save second file first and next first file will be saved.
+#### Listing files and directories
+
+      #ls          list with filenames
+      #ls -l       long listing of the file
+      #ls -l       filename to see the permissions of a particular file
+      #ls -al      shows the files in ascendeing order of modification
+      #ls p*       All the files start with p
+
+#### Types of Files:
+
+    Symbol     type of file
+      -            Normal file
+      d            Directory
+      l            Link file(shortcut)
+      b            Block file(Harddisk, Floppy disk)
+      c            Character file(Keyboard, Mouse)
+* Unix/ Linux stores every thing in the form of file i.e sofrtware, hardware, directory and file is also a file.
+
+      nsivareddy@X-J3PVH32KM4 ~ % ls -l /
+      total 13
+      drwxrwxr-x  33 root  admin  1056 22 Nov 00:39 Applications
+      drwxr-xr-x@ 39 root  wheel  1248 17 Aug 00:14 bin
+      drwxr-xr-x   2 root  wheel    64 12 Jan  2024 cores
+      dr-xr-xr-x   4 root  wheel  6508 31 Oct 03:46 dev
+      lrwxr-xr-x@  1 root  wheel    11 17 Aug 00:14 etc -> private/etc
+      lrwxr-xr-x   1 root  wheel    25 31 Oct 03:46 home -> /System/Volumes/Data/home
+      drwxr-xr-x  71 root  wheel  2272  7 Sep 23:51 Library
+      drwxr-xr-x   4 root  wheel   128 21 Oct 22:36 opt
+      drwxr-xr-x   6 root  wheel   192 31 Oct 03:46 private
+      drwxr-xr-x@ 76 root  wheel  2432 17 Aug 00:14 sbin
+      drwxr-xr-x@ 10 root  wheel   320 17 Aug 00:14 System
+      lrwxr-xr-x@  1 root  wheel    11 17 Aug 00:14 tmp -> private/tmp
+      drwxr-xr-x   7 root  admin   224  7 Sep 23:50 Users
+      drwxr-xr-x@ 11 root  wheel   352 17 Aug 00:14 usr
+      lrwxr-xr-x@  1 root  wheel    11 17 Aug 00:14 var -> private/var
+      drwxr-xr-x   4 root  wheel   128 21 Nov 00:10 Volumes
+* `ls -l \dev\sda` here `/sda` is hard diskfile which can't be readable.
+* `cat \dev\sda` is not readable and is protected by kernel operating system.
+* `cat \dev\tty0` is printer device
+  
+   <img width="597" height="99" alt="image" src="https://github.com/user-attachments/assets/bb97d9d4-ccc1-453b-8247-00d560338b70" />
+
+#### Symbolic links:
+
