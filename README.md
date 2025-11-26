@@ -293,7 +293,7 @@
         file1
 * If there is existing file in the same directory it will ask if it need to over rider with `y` option to proceed to replace or `n` to abort.
 
-#### Copying a directory to anothe directory:
+#### Copying a directory to another directory:
 * we need to use `-r` while copying directory mandatorily. 
 * `-v` verbose display what is copiing
 * `-f` copy the data forcefully
@@ -437,6 +437,131 @@
       #ls -l       filename to see the permissions of a particular file
       #ls -al      shows the files in ascendeing order of modification
       #ls p*       All the files start with p
+  
+      
+* `ls -ld *` list all files and directories in a long format witout entering directories.
+* Ex:
+      mkdir dir1 dir2
+      touch file1.txt file2.txt
+  
+      # Run the command
+      ls -ld *
+      drwxr-xr-x 2 user group 4096 Nov 26 10:30 dir1
+      drwxr-xr-x 2 user group 4096 Nov 26 10:30 dir2
+      -rw-r--r-- 1 user group    0 Nov 26 10:30 file1.txt
+      -rw-r--r-- 1 user group    0 Nov 26 10:30 file2.txt
+* `ls -ld */` lists only directories in long format.
+  
+      ls -ld */
+      drwxr-xr-x 2 user group 4096 Nov 26 10:30 dir1/
+      drwxr-xr-x 2 user group 4096 Nov 26 10:30 dir2/
+* `ls -ld directory_name` Shows information about the directory itself(not its contents)
+* Ex:
+      mkdir myproject
+      touch myproject/file1.txt myproject/file2.txt
+      
+      # WITHOUT -d flag (shows directory contents)
+      ls -l myproject
+      #Output:
+      -rw-r--r-- 1 user group 0 Nov 26 10:30 file1.txt
+      -rw-r--r-- 1 user group 0 Nov 26 10:30 file2.txt
+  
+      # With -d flag(shows directory info)
+      ls -ld myproject
+      #output:
+      drwxr-xr-x 2 user group 4096 Nov 26 10:30 myproject
+ * `ls -l myproject` shows the files inside the directory.
+ * `ls -ld myproject` shows directiry as an entry
+    
+* `ls ? ample`  matches files with exactly One character before "ample"here `?` exactly one character(any character). Total: 6 characters(X + ample).
+ * Ex:
+      nsivareddy@X-J3PVH32KM4 practice % touch sample example xample 1ample ample
+      nsivareddy@X-J3PVH32KM4 practice % ls ?ample
+      1ample	sample	xample
+* `ls [ae]` list all the files starting with `a` or `e` followed by anyting (or nothing). ie first character must be `a` or `e`. `*` followwd by zero or more characters.
+ * ex: 
+      nsivareddy@X-J3PVH32KM4 practice % touch apple.xt ample example.txt banana.txt elephent.txt file.txt
+      nsivareddy@X-J3PVH32KM4 practice % ls [ae]*
+      ample		apple.xt	elephent.txt	example
+
+* `ls [aeiou]*` files starting with vowels.
+* `ls [0-9]*` files starting with numbers.
+* `ls [A-Z]*` files starting with uppercase letters.
+* `ls [!ae]*` list files NOT starting with `a` or `e`. First character must NOT be `a` or `e`. `*` followed by zero or more characters.
+ls [!]
+
+      ls '[!ae]' or ls [\!ae]* or ls "[\\!ae]" files must NOT start with a or e letters
+      ls [!aeiou]*     file must NOT starting with vowels.
+      ls [!0-9]*       files must NOT start with numbers
+      ls [!a-z]*       files must NOT start with letters
+      ls [a-zA-Z]*     file start with lower and upper case letter
+
+* `ls [am][c-z][4-9]` Matches file with exactly 3 characters following a sepcific pattern.
+   * `[a-m]` 1st character: lowercase letter from `a` to `m`
+   * `[c-z]` 2nd character: lowercase letter from `c` to `z`
+   * `[4-9]` 3rd character: digit feom `4` to `9`
+ 
+* `ls ???` files with exactly 3 characters
+* `ls [A-Z]*[0-9]` files starting with uppper case, any middle, ending with digit.
+* `ls [!.]*`  files not starting with dot (hidden files)
+* `ls *.[tp][xd][tf]`   files with `.txt` or `.pdf` extensions
+* `ls *~`  backup files (ending with ~)
+* `ls *[0-9]` files with single digit in name
+   
+      nsivareddy@X-J3PVH32KM4 dummy % touch ac4 bz9 mz4 ad3 nz4 ac5 az9 bd8 zz9 
+      nsivareddy@X-J3PVH32KM4 dummy % ls [a-m][c-z][4-9]
+      ac4	ac5	az9	bd8	bz9	mz4
+
+* Complete Comparison Table: 
+
+<img width="735" height="282" alt="image" src="https://github.com/user-attachments/assets/bfc8ed18-2eb9-47a9-a948-f62aa46946d6" />
+
+* History commands:
+  
+       !!    repeat last command
+       !ls   repeat last command starting with ls
+       !5    repeat command #5 from history
+       !$    last argumnet of previous commmand
+       !*    all the arguments of prevous command
+* Examples of history commands:
+
+      # List multiple files
+      ls file1.txt file2.txt file3.txt
+      
+      # Copy all those files to a directory
+      cp !* /backup/
+      # Expands to: cp file1.txt file2.txt file3.txt /backup/
+      
+      
+      # Change permissions on multiple files
+      chmod 644 report.pdf invoice.pdf contract.pdf
+      
+      # Now change owner of the same files
+      chown user:group !*
+      # Expands to: chown user:group report.pdf invoice.pdf contract.pdf
+      
+      # Check files
+      ls *.log *.tmp *.cache
+      
+      # Move all of them
+      mv !* /tmp/
+      # Expands to: mv *.log *.tmp *.cache /tmp/
+      
+      
+      # Download files
+      wget file1.zip file2.zip file3.zip
+      
+      # Unzip all of them
+      unzip !*
+      # Expands to: unzip file1.zip file2.zip file3.zip
+      # (Though this would only unzip file1.zip; you'd need a loop for all)
+      
+      # View configuration files
+      cat nginx.conf php.ini mysql.cnf
+      
+      # Backup all of them
+      cp !* /backup/configs/
+      # Expands to: cp nginx.conf php.ini mysql.cnf /backup/configs/
 
 #### Types of Files:
 
@@ -470,7 +595,281 @@
 * `cat \dev\sda` is not readable and is protected by kernel operating system.
 * `cat \dev\tty0` is printer device
   
-   <img width="597" height="99" alt="image" src="https://github.com/user-attachments/assets/bb97d9d4-ccc1-453b-8247-00d560338b70" />
+
+
+<img width="597" height="99" alt="image" src="https://github.com/user-attachments/assets/bb97d9d4-ccc1-453b-8247-00d560338b70" />
+
+* **Side-by-side comparison**:
+  
+      # Command with multiple arguments
+      touch file1.txt file2.txt file3.txt
+      
+      # Use !$ (last argument only)
+      ls !$
+      # Expands to: ls file3.txt
+      
+      # Use !* (all arguments)
+      ls !*
+      # Expands to: ls file1.txt file2.txt file3.txt
+* **Working with git**:
+  
+      # Clone a repository
+      git clone https://github.com/user/myproject.git
+      
+      # Navigate into it
+      cd !$
+      # Expands to: cd myproject.git
+      # (Note: you'd actually want the directory name, which is 'myproject')
+      
+      # Better approach:
+      git clone https://github.com/user/myproject.git myproject
+  
+* **File Management**:
+   
+      # Create multiple directories
+      mkdir docs images videos scripts
+      
+      # Set permissions on all of them
+      chmod 755 !*
+      # Expands to: chmod 755 docs images videos scripts
+* **Text Processing**:
+  
+      # Concatenate files
+      cat header.txt body.txt footer.txt
+      
+      # Combine them into one
+      cat !* > complete.txt
+      # Expands to: cat header.txt body.txt footer.txt > complete.txt
+* **System Administration**:
+  
+      # Stop services
+      systemctl stop nginx mysql redis
+      
+      # Check status of the same services
+      systemctl status !*
+      # Expands to: systemctl status nginx mysql redis
+* **Find and Act**:
+  
+      # Find large files
+      find /var/log -name "*.log" -size +100M
+      
+      # Delete them (be careful!)
+      rm !$
+      # Expands to: rm -size (WRONG! This is the last argument, not what you want)
+      
+      # For this case, you'd want to use:
+      rm $(find /var/log -name "*.log" -size +100M)
+  
+<img width="625" height="328" alt="image" src="https://github.com/user-attachments/assets/ced7c2b2-a053-47aa-9c36-fd37ea54c397" />
+
+* **Practical Interactive Examples**:
+* **1. File Operations**:
+      $ echo "Hello World" > message.txt
+      $ cat !$
+      cat message.txt
+      Hello World
+      
+      $ ls -l message.txt
+      -rw-r--r-- 1 user group 12 Nov 26 10:30 message.txt
+      
+      $ chmod 600 !$
+      chmod 600 message.txt
+      
+      $ ls -l !$
+      ls -l message.txt
+      -rw------- 1 user group 12 Nov 26 10:30 message.txt
+
+* **Multiple Files**:
+  
+      $ touch file1 file2 file3
+      $ ls !*
+      ls file1 file2 file3
+      file1  file2  file3
+      
+      $ chmod 644 !*
+      chmod 644 file1 file2 file3
+      
+      $ ls -l !*
+      ls -l file1 file2 file3
+      -rw-r--r-- 1 user group 0 Nov 26 10:30 file1
+      -rw-r--r-- 1 user group 0 Nov 26 10:30 file2
+      -rw-r--r-- 1 user group 0 Nov 26 10:30 file3
+* **Directiry Operations**:
+  
+      $ mkdir -p projects/website/src
+      $ cd !$
+      cd projects/website/src
+      
+      $ pwd
+      /home/user/projects/website/src
+      
+      $ touch index.html style.css script.js
+      $ ls !*
+      ls index.html style.css script.js
+      index.html  script.js  style.css
+* **Combing with Other Commands**:
+  
+      # Create file and immediately edit
+      touch newfile.txt && vim !$
+      # Expands to: touch newfile.txt && vim newfile.txt
+      
+      # Download and verify
+      wget https://example.com/package.tar.gz && md5sum !$
+      # Expands to: wget https://example.com/package.tar.gz && md5sum package.tar.gz
+      
+      # Compile and run
+      gcc program.c -o program && ./!$
+      # Expands to: gcc program.c -o program && ./program
+
+* **Using Pipes**:
+  
+      # Find files and act on last one
+      find . -name "*.txt"
+      # ... shows list of files ...
+      
+      # Edit the last one found? No, !$ would be the find command's last arg
+      # Better to use: vim $(find . -name "*.txt" | tail -1)
+* **!^ - First Argument**:
+  
+      $ cp /etc/hosts /tmp/hosts.backup
+      $ cat !^
+      cat /etc/hosts
+* **!:2 - Specific Argument(2nd in this case)**:
+  
+      $ cp source.txt destination.txt /backup/
+      $ ls !:2
+      ls destination.txt
+* **!:2-$ - Range of Argumants (2nd to last)**:
+  
+      $ echo one two three four five
+      $ echo !:2-$
+      echo two three four five
+      two three four five
+* **Entire Previous Command**:
+* 
+      $ cat /etc/shadow
+      Permission denied
+      
+      $ sudo !!
+      sudo cat /etc/shadow
+      # Now it works!
+* **View before Executing**:
+* **See what will Expand(:p modifier)**:
+  
+      $ ls file1 file2 file3
+      $ echo !*:p
+      # Shows: echo file1 file2 file3
+      # Doesn't execute, just prints
+      
+      $ echo !*
+      # Now executes: echo file1 file2 file3
+  
+
+* **Common Pitfalls and Solutions**:
+* **1! with no Arguments**:
+* 
+      $ ls
+      # If previous command had no arguments, !$ expands to nothing
+      
+      $ cd !$
+      # Error or unexpected behavior
+* **!* Including Unwanted Argumnets**:
+  
+          $ rm -rf /tmp/cache
+          $ ls !*
+          ls -rf /tmp/cache
+          # Oops! Includes the -rf flag too!
+          
+          # Solution: Use specific argument numbers
+          $ ls !$
+          ls /tmp/cache
+* **History Expansion in Scripts**: 
+
+        # In scripts, history expansion is usually disabled
+        # Use variables instead:
+        last_arg=$_  # Special variable for last
+  
+* **Practical Cheat Sheet**:
+      # Download and extract in one go
+      wget URL && tar -xzf !$ && cd !$
+      
+      # Create directory and navigate
+      mkdir mydir && cd !$
+      
+      # Copy files and verify
+      cp file1 file2 destination/ && ls !$
+      
+      # Change permissions then owner
+      chmod 755 script.sh && chown user:group !$
+      
+      # Git: Add and commit
+      git add file1.txt file2.txt && git commit -m "Added !*"
+* **Enabling/ Disabling History Expansion**:
+* **Check if Enabled**:
+  
+      # In bash
+      set -o | grep histexpand
+      
+      # In zsh
+      setopt | grep hist
+* **Disable Temporarily**:
+  
+      # Bash
+      set +H
+      
+      # Zsh
+      setopt no_bang_hist
+* **Enable**:
+
+      # Bash
+      set -H
+      
+      # Zsh
+      setopt bang_hist
+
+
+<img width="616" height="212" alt="image" src="https://github.com/user-attachments/assets/bac4e23a-dbc3-4dc5-92a6-0055476afae5" />
+
+* **Practice Exercise**:
+  
+      # 1. Create files
+      touch apple.txt banana.txt cherry.txt
+      
+      # 2. List the last one
+      ls !$
+      # Should show: cherry.txt
+      
+      # 3. List all of them
+      ls !*
+      # Should show: apple.txt banana.txt cherry.txt
+      
+      # 4. Move all to a directory
+      mkdir fruits
+      mv !* fruits/
+      # Should move: apple.txt banana.txt cherry.txt to fruits/
+      
+      # 5. Go to that directory
+      cd !$
+      # Should go to: fruits/
+
+<img width="624" height="208" alt="image" src="https://github.com/user-attachments/assets/d19eba8f-6e31-4dc3-802e-a6d75bc40fe2" />
 
 #### Symbolic links:
-
+* There are two types of links available.
+ * `Soft link`:
+   * Size of link file is equal to the no. of characters in the name of original file.
+   * Can be created across the Partition.
+   * Inode (index) no. of source and link file is different.
+   * If original file is deleted, link is broken and data is lost.
+   * Shortcut file.
+* `Hard link`:
+   * Size of both files isa same.
+   * Can't be created across the partition.
+   * Inode no. of both file is same.
+   * If original file is deleted then also link will contain data.
+   * Backup file.
+* An inode (index node) is a data structure in Unix/Linux filesystems that stores metadata about a file or directory. Each file or directory has a unique inode number that serves as its identifier in the filesystem.
+  
+* **Creating a soft link**:
+  * `ln -s <source file> <destination>`
+   
