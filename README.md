@@ -854,6 +854,78 @@ ls [!]
 
 <img width="624" height="208" alt="image" src="https://github.com/user-attachments/assets/d19eba8f-6e31-4dc3-802e-a6d75bc40fe2" />
 
+#### Remove file content without login to vi or vim:
+* **Method 1: Using > (Redirect - Simplest)**:
+  
+      # Clear single file
+      > connection_failed_servers.txt
+      
+      # Clear multiple files at once
+      > connection_failed_servers.txt
+      > chef_not_found_servers.txt
+      > chef_version_report.txt
+* **Method 2: Using truncate Command**:
+  
+      # Clear single file
+      truncate -s 0 connection_failed_servers.txt
+      
+      # Clear multiple files
+      truncate -s 0 connection_failed_servers.txt chef_not_found_servers.txt chef_version_report.txt
+* **Method 3: Using echo with -n Flag**:
+  
+      echo -n > connection_failed_servers.txt
+* **Method 4: Clear All Chef Output Files at Once**:
+  
+      # Clear all three output files
+      > connection_failed_servers.txt && > chef_not_found_servers.txt && > chef_version_report.txt
+      
+      # Or using a loop
+      for file in connection_failed_servers.txt chef_not_found_servers.txt chef_version_report.txt; do
+          > "$file"
+      done
+* **Method 5: Using cat /dev/null**:
+
+      cat /dev/null > connection_failed_servers.txt
+* **Recommended Approach for Your Script 🎯**:
+      
+      Add this at the beginning of your chef_version.sh:
+      #!/bin/bash
+      
+      # Clear previous results before starting
+      > connection_failed_servers.txt
+      > chef_not_found_servers.txt
+      > chef_version_report.txt
+      
+      # Rest of your script...
+      for node in $(cat server-list.txt); do
+          ...
+      #!/bin/bash# Clear previous results before starting> connection_failed_servers.txt> chef_not_found_servers.txt> chef_version_report.txt# Rest of your script...for node in $(cat server-list.txt); do    ...
+* **Or Create a Cleanup Script**:
+  
+      # Create cleanup.sh
+      cat > cleanup.sh << 'EOF'
+      #!/bin/bash
+      echo "Clearing output files..."
+      > connection_failed_servers.txt
+      > chef_not_found_servers.txt
+      > chef_version_report.txt
+      echo "Done! Files cleared."
+      EOF
+
+      chmod +x cleanup.sh
+* **Quick One-Liner for All Files**:
+      
+      # Clear all .txt files in current directory (be careful!)
+      for f in *.txt; do > "$f"; done
+      
+      # Or specifically just the output files
+      for f in connection_failed_servers.txt chef_not_found_servers.txt chef_version_report.txt; do > "$f"; done
+      # Run it before executing chef_version.sh
+      ./cleanup.sh
+      ./chef_version.sh
+
+ <img width="616" height="216" alt="image" src="https://github.com/user-attachments/assets/c500bf71-529c-4276-a8c2-062e9b45503c" />
+
 #### Symbolic links:
 * There are two types of links available.
  * `Soft link`:
