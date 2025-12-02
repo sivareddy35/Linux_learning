@@ -967,10 +967,23 @@ ls [!]
         * Here l is link file, size of link file is equal to the no of characters in the name of original file.
   * `nsivareddy@X-J3PVH32KM4 ~ % ln -s /Users/nsivareddy/practice/dir1/test test1` we don't need to specify the destination if we are in the same locationa and give any custom name or same name as oiginal file.
   * `ln -s /Users/nsivareddy/practice/dir1/test /Users/nsivareddy/practice/softlink` here we are the current woking directory is different than source and destination however created a socftlink shortcut with `softlink` file under '/Users/nsivareddy/practice/' path.
+  * Softlink does not hold any data it is shortcut link to open for original file.
+  * When we delete the link we will only loose the access but the original file will be available but when we delete the original file the link exists but file can't be accessed.
 
-Key points
-Action	Result
-Edit original file	Changes visible through symlink ✓
-Edit via symlink	Changes the original file ✓
-Delete symlink	Original file remains intact
-Delete original	Symlink becomes broken (points to nothing)
+   <img width="556" height="204" alt="image" src="https://github.com/user-attachments/assets/15e3c3b9-b9ba-4062-aa7c-65c56d94a571" />
+* To delete link file use  `rm -rf <softlink name>`.
+* **Creating a soft link**:
+* `ln <source file> <destination>`
+* Incase if we don't want to loose the data once we delete a file or content hardlink backup will helps.
+* If we exit the original file the data is copied to backup file and if we make any changes to original file the same changes will be applicable in original file with the help of inode since both have same inode number.
+* 
+
+
+  <img width="565" height="201" alt="image" src="https://github.com/user-attachments/assets/bad18db5-23a4-4253-b91f-355b8f6c11d3" />
+
+
+
+  <img width="705" height="240" alt="image" src="https://github.com/user-attachments/assets/1036f4f6-157b-479c-9b07-50d4ddf13a49" />
+
+
+
