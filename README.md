@@ -976,12 +976,31 @@ ls [!]
 * `ln <source file> <destination>`
 * Incase if we don't want to loose the data once we delete a file or content hardlink backup will helps.
 * If we exit the original file the data is copied to backup file and if we make any changes to original file the same changes will be applicable in original file with the help of inode since both have same inode number.
-* 
+* If we update any of the original or hard link file both files will be auto updated.
+* We can find the number of hardlink after the file permissions but it will not show which is the hardlink file path.
+* Size of the both files is same with the same i node number.
 
+        nsivareddy@X-J3PVH32KM4 practice % ln file1.txt /Users/nsivareddy/practice/dir1/hard
+        
+        nsivareddy@X-J3PVH32KM4 practice % ls -la file1.txt 
+        -rw-r--r--  2 nsivareddy  staff  42  3 Dec 05:08 file1.txt
+        
+        nsivareddy@X-J3PVH32KM4 practice % ls -la /Users/nsivareddy/practice/dir1/hard
+        -rw-r--r--  2 nsivareddy  staff  42  3 Dec 05:08 /Users/nsivareddy/practice/dir1/hard
+* Both have same inode number.
+  
+        nsivareddy@X-J3PVH32KM4 practice % ls -i /Users/nsivareddy/practice/dir1/hard
+        51304437 /Users/nsivareddy/practice/dir1/hard
+        nsivareddy@X-J3PVH32KM4 practice % ls -i file1.txt
+        51304437 file1.txt
+* If we delete the original file the original file will be unaffected, the only change we can find is the number of links will be updated to 1 from1.
+* We can't find the hardlink files. The only one method to find hardlink is with `inode number`.
+* We can search the file with the same inode number to find hardlink files. `find / -inum <inode number>`
+
+<img width="244" height="32" alt="image" src="https://github.com/user-attachments/assets/94207807-5b9d-43ee-997f-c270901d45a3" />
+   
 
   <img width="565" height="201" alt="image" src="https://github.com/user-attachments/assets/bad18db5-23a4-4253-b91f-355b8f6c11d3" />
-
-
 
   <img width="705" height="240" alt="image" src="https://github.com/user-attachments/assets/1036f4f6-157b-479c-9b07-50d4ddf13a49" />
 
