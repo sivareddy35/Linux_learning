@@ -945,3 +945,32 @@ ls [!]
 * **Creating a soft link**:
   * `ln -s <source file> <destination>`
    
+        nsivareddy@X-J3PVH32KM4 ~ % cd  /Users/nsivareddy/practice/dir1 
+        nsivareddy@X-J3PVH32KM4 dir1 % vi test
+        there 
+        are 
+        some 
+        lines 
+        to test 
+        soft link 
+        
+        nsivareddy@X-J3PVH32KM4 dir1 % ls -l
+        total 8
+        -rw-r--r--  1 nsivareddy  staff  47  2 Dec 19:14 test
+        *  here 47 is size of the file
+        
+        
+        nsivareddy@X-J3PVH32KM4 ~ % ln -s /Users/nsivareddy/practice/dir1/test .
+        nsivareddy@X-J3PVH32KM4 ~ % ls -l test
+        lrwxr-xr-x  1 nsivareddy  staff  36  2 Dec 19:16 test -> /Users/nsivareddy/practice/dir1/test
+        
+        * Here l is link file, size of link file is equal to the no of characters in the name of original file.
+  * `nsivareddy@X-J3PVH32KM4 ~ % ln -s /Users/nsivareddy/practice/dir1/test test1` we don't need to specify the destination if we are in the same locationa and give any custom name or same name as oiginal file.
+  * `ln -s /Users/nsivareddy/practice/dir1/test /Users/nsivareddy/practice/softlink` here we are the current woking directory is different than source and destination however created a socftlink shortcut with `softlink` file under '/Users/nsivareddy/practice/' path.
+
+Key points
+Action	Result
+Edit original file	Changes visible through symlink ✓
+Edit via symlink	Changes the original file ✓
+Delete symlink	Original file remains intact
+Delete original	Symlink becomes broken (points to nothing)
