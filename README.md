@@ -1073,21 +1073,54 @@ ls [!]
     * Usually have no login shell (/usr/sbin/nologin or /bin/false)
     * can't log in interactively
   * 3. Normal/ Regular Users(Normal Users):
-    * UID range: typically 1000+, home directiory is `/home` and default shekll is `/bin/bash`
+    * UID range: typically 1000+ upto 60000, home directiory is `/home` and default shekll is `/bin/bash`
     * The user added by super user.
     * Limited permissions (can not typically system files)
   * 4. Sudo User:
-    * In case admin is absent and the user want to install some packages 
+    * Sudouser is a normal user with root previlege. 
+    * In case admin is absent and the user want to install some packages/ want to create a d directory.
+  * To check the default login details for the user we can find under `vim /etc/login.defs`
+  * System account user id range is from 201 to 999
 * Key files
    
       file           purpopse
       /etc/passwd    User account information
-      /etc/shadow    Encrypted passwords (Restricted access)
+      /etc/shadow    Encrypted passwords (Restricted access only for root)
       /etc/group     Group definitions
       /etc/gshadow   Group passwords(raralely used)
-
-* Example: `/etc/passwd` Entry
+      gettent passwd List all users including LDAP/network users
+* Detailed user Info:
+  
+      # Full details for specific user
+      getnent passwd reddy
+      # Finger (if installed)
+      finger reddy
       
+      # Check user exists
+      id reddy
+      
+      # User's group
+      groups reddy
+
+* List Admin/Sudo Users:
+  
+      # Users in sudo group (Debian/Ubuntu)
+      getent group sudo
+      
+      # Users in wheel group (CentOS/RHEL/Fedora)
+      getent group wheel
+      
+      # Check sudoer file
+      sudo cat /etc/sudoers
+
+
+* `id username 2>/dev/null && echo "exists" || echo "not exists"` check if user name exists or not.
+* `last` last logins
+* `who`  currently loggedin
+* `sudo lastb` failed login attemps (security)
+* Example: `/etc/passwd` Entry
+  
+      username:password:UID:GID:comment:home:shell    
       username:x:1001:1001:Full Name:/home/username:/bin/bash
          │     │   │    │      │           │            │
          │     │   │    │      │           │            └── Default shell
@@ -1097,15 +1130,297 @@ ls [!]
          │     │   └── UID
          │     └── Password placeholder (actual password in /etc/shadow)
          └── Username
+  
+* Modify the default: username:password:UID:GID:comment:home:shell
+  
+        cat /etc/shells                                   list all shells.
+        usermod -s /bin/sh <user_name>                    change default shellfor that particular user.
+        useradd -D                                        Give default home directory of the user info
+        usermod -d /<group_name>/<user_name> <user_name>  Change defult home directory
+        usermod -c "comment/group name" <user_name>       Chnage comment/ group name
+        usermod -u <custom_userID> <user_name>            Change deault user name
+        usermod -g <groupID> <user_name>                  Change default group
+        grep <user_name> /etc/shadow                      Check if the password is applied or not
+        passwd stdin <user_name>                          update password to the user
+        usermod -l <New_user_name> <old_user_name>        Changes user name
+  
+  * We need to change user id incase of ex. banking account to link all other service of the bank for a single user
+  * If `username:!!...` the user is not assigned password.
+  * This user name is required in case if we need to provide alias name in company mail id since every company will have their own website name. 
+  
+
+   <img width="496" height="440" alt="image" src="https://github.com/user-attachments/assets/3b815c44-ee46-4624-8f34-70a582402c45" />
+
+   <img width="803" height="650" alt="image" src="https://github.com/user-attachments/assets/b0863cbc-6dd5-4512-adf1-d95dc5de87df" />
+* **Question:** Add a user SivaReddy with uid 6000 gid 1000 comment dba homedir /visitors shell /bin/sh  passwd hkdgwhlkgw
+* mkdir /visitors
+* usermod -u 6000 -g 1000 -c "dba" -d /visitors -m -s /bin/bash sivareddy    ==> with m to copy home diredctory, default home directory changed to /visitors now
+* usermod -u 8443 -g 1000 -c "sa" -d /visitors/siva -s /bin/bash siva          ==> Now all users will be created by default in vistors directory
+* find / -user <user_name>              provides the user name path 
+* `useradd ram` is created in `/var/spool/mail/ram` location If we want to create a user and change the directiry. Wew need to modify `vim /default/useradd` after addingusers to visitors to home directory present in `/var/spool.mail` Since we didn't copy hidden files we will get errroas `Not copying file from skel directory into it` with `cp .b* /Visitors`.
+* No come out of the directory add user `useradd sam` and swicth sam user `sudo su - sam`pwd will give `/bvisitors/sam`.
+* User is not created inside home directory user login and user profiles all in inside `/etc/skel` folder it is recommend not to change.
+* We can chage in the default settings as nroot user , regualr user can't modify id it is sudo previlege users then after we need to copy all hidden files to that particular folder then whatever user we create it will not be created inside hoem directory and creates in custom directory.
+     
+  <img width="763" height="762" alt="image" src="https://github.com/user-attachments/assets/b51a16dc-4589-48df-861d-dd986dff0ea3" />
+* Normal user don't need to change default setting by default it would be `home`  but if we want to mount a network user ex LADP(Lightweight Directory Access Protocol) which is a protocol for acccessing and managing directory services - Centralized databasse storibng user accounts, groups and other organizational data.
+* LDAP user or samba users are not auto mounted inside home directory we have to create another directory.
+* To change the home directory of user using usermod command, instead of this we can modify `/etc/passwd` directory all thse 7 fields there.
+* Once the fiel got saved and switch the user
+* When a new user is added the user info is stored under `/etc/passwd` once the user is deleted only `/etc/passwd` will be delete with `userdel <username>` comand but it will not delete all places ie `home`,`skel` folder, `all hidden files` and `/var/spool/mail`  will remains and does not allow to recreate the same user as the user details remains in the other folders.
+* `userdel -r <user_name>` delete user name from all the locations.
+  
+  <img width="662" height="371" alt="image" src="https://github.com/user-attachments/assets/5ca63739-d508-4325-ac88-0902b5bbfadd" />
+
+* Once we edit `/etc/passwd` the skel and hidden directories are copied in RHEL8 but in RHEL7 we need to copy manually with `cp` command.
+  
+  <img width="504" height="331" alt="image" src="https://github.com/user-attachments/assets/f153dd49-4c02-45ca-8c5c-1e1921f04164" />
+
+
+* **/etc/passwd:**
+* This file stores encrypted passwords and password-related information for user accounts. It is readable by root user only.
+  
+        # Check permissions
+        ls -l /etc/shadow
+        # -rw-r----- 1 root shadow 1234 Dec 4 10:00 /etc/shadow
+* `File format:` Each line represnts one user with 9 fields separed by (:)
+  
+        username:password:lastchg:min:max:warn:inactive:expire:reserved
+        reddy:$6$xyz123$ABCdef.../...:19876:0:99999:7:::
+
+* `Field Breakdown`:
+  
+         #   Filed         Example                 Meaning
+  
+         1 Username        reddy                  Account name
+         2 Password        $6$xyz123$hash         Encrypted password
+         3 Last Change     19876                  Days Since Jan 1,1970 password was changed 
+         4 Min days        0                      Min days before password can be changed
+         5 Max days        99999                  Max days password is valid
+         6 Warn days       7                      Days before expiry account in warn user
+         7 Inactive                               Days after expiry account is disabled
+         8 Expire                                 Date account expires (days since epoch)
+         9 Reserved                               Reserved for future use
+* `Password Field Values`:
+
+        value                Meaning
+  
+        $6$xyz123$hash      SHA-512 encrypted password
+        $5$xyz123$hash      SHA-216 encrypted password
+        $1$xyz123$hash      MD5 encrypted (old, weak)
+        *                   Account disabled, no password login
+        !                   Account locked
+        !!                  Password neverset
+        !$6$...             Locked account(! prefix)
+        (empty)             No password required (dangerous)
+         
+* `Password Hash Prefixes`:
+  
+        Prefix        Algorithm
+        $1$           MD5
+        $5$           SHA-256
+        $6$           SHA-512 (recommended)
+        $y$           yescrypted(newer)
+* Real Exampple:
+  
+        sudo cat /etc/shadow
+  
+        root:$6$rounds=5000$saltsalt$longhashhere...:19800:0:99999:7:::  ==> root      --> has password
+        daemon:*:19500:0:99999:7:::                                      ==> daemon    --> Disabled(*)
+        nobody:*:19500:0:99999:7:::                                      ==> nobody    --> Diabled(*)
+        reddy:$6$aBcDef$xyz123hashvalue...:19876:0:99999:7:::            ==> reddy     --> Has password
+        john:!!:19850:0:99999:7:::                                       ==> john      --> Password never set(!!)
+        locked_user:!$6$salt$hash...:19800:0:99999:7:::                  ==> Locked_user --> Locked(! Prefix)
+* **Change /Update Password**:
+  * `Using passwd(recommended)`:
+    
+        # Change your own password
+        passwd
+        
+        # Change another user's password (as root)
+        sudo passwd reddy
+        
+        # Force user to change password on next login
+        sudo passwd -e reddy
+
+  * `Using chpasswd(Batch/Scripts)`:
+    
+        # Single user
+        echo "reddy:newpassword" | sudo chpasswd
+        
+        # Multiple users from file
+        sudo chpasswd < passwords.txt
+        
+        # With encrypted password
+        echo "reddy:$6$salt$hashedpassword" | sudo chpasswd -e
+  * `Using usermod`:
+    
+        # Set encrypted password directly
+        sudo usermod -p '$6$salt$hashedpassword' reddy
+
+
+* **Lock/Unlock Account:**
+  * Lock Account:
+    
+        # Method 1: passwd
+        sudo passwd -l reddy
+        
+        # Method 2: usermod
+        sudo usermod -L reddy
+        
+        # Verify (shows ! prefix)
+        sudo grep reddy /etc/shadow
+        # reddy:!$6$salt$hash...:19876:0:99999:7:::
+  * Unlock Account:
+   
+        # Method 1: passwd
+        sudo passwd -u reddy
+        
+        # Method 2: usermod
+        sudo usermod -U reddy
+
+* Password Aging/Expiry:
+** View Password info
+  
+      # check password status
+      sudo change -l reddy
+      
+  * Output: 
+      Last password change                    : Dec 04, 2025
+      Password expires                        : never
+      Password inactive                       : never
+      Account expires                         : never
+      Minimum number of days between changes  : 0
+      Maximum number of days between changes  : 99999
+      Warning days before password expires    : 7
+* Set Password Policies:
+  
+      # Force password change on next login
+      sudo chage -d 0 reddy
+      
+      # Set password expiry to 90 days
+      sudo chage -M 90 reddy
+      
+      # Set minimum days between changes
+      sudo chage -m 7 reddy
+      
+      # Set warning days before expiry
+      sudo chage -W 14 reddy
+      
+      # Set account expiration date
+      sudo chage -E 2025-12-31 reddy
+      
+      # Interactive mode
+      sudo chage reddy
+* Don't have access:
+ * Forget Root Password
+   * Single user mode(GRUB):
+     
+          # 1. Reboot and hold SHIFT to get GRUB menu
+          # 2. Press 'e' to edit boot entry
+          # 3. Find line starting with 'linux' and add at end:
+          init=/bin/bash
+          
+          # 4. Press Ctrl+X to boot
+          # 5. Remount filesystem as writable
+          mount -o remount,rw /
+          
+          # 6. Change password
+          passwd root
+          
+          # 7. Reboot
+          exec /sbin/init
+   * Recovery Mode(Ubuntu):
+     
+          # 1. Boot into recovery mode from GRUB
+          # 2. Select "root - Drop to root shell prompt"
+          # 3. Remount filesystem
+          mount -o remount,rw /
+          
+          # 4. Change password
+          passwd root
+          # or
+          passwd username
+          
+          # 5. Reboot
+          reboot
+
+    * Live USB:
+          # 1. Boot from Live USB
+          # 2. Mount the system partition
+          sudo mount /dev/sda1 /mnt
+          
+          # 3. Chroot into the system
+          sudo chroot /mnt
+          
+          # 4. Change password
+          passwd root
+          
+          # 5. Exit and reboot
+          exit
+          sudo reboot
+ * User Account Locked:
+   
+          # Check if locked
+          sudo passwd -S reddy
+          # reddy L 12/04/2025 0 99999 7 -1 (Password locked.)
+          
+          # Unlock
+          sudo passwd -u reddy
+          
+          # Or set new password (also unlocks)
+          sudo passwd reddy
+ * Password Never Set(!!):
+
+          # Set initial password
+          sudo passwd reddy
+ * No Sudo Access:
+   
+          # If you have physical access, use recovery mode (above)
+          
+          # If another admin exists, ask them to:
+          sudo passwd your_username
+          
+          # Or add you to sudo group
+          sudo usermod -aG sudo your_username  # Debian/Ubuntu
+          sudo usermod -aG wheel your_username  # CentOS/RHEL
+ * Quick Reference:
+   
+          sudo cat /etc/shadow              view shadow file
+          sudo passwd username              Change password
+          sudo passwd -l username           Lock account
+          sudo passwd -u username           Unlock account
+          sudo passwd -S username           Check p[assword status
+          sudo chage -l username            View expiry info
+          sudo chage -d 0 username          Force password change
+          sudo chage -M 90 username         Set max password age
+          openssl passwd -6 "password"      Generate passowrd hash
+          sudo vipw -s                      safe edit shadow 
+ * Security best practices:
+   
+          # Ensure correct permissions
+          sudo chmod 640 /etc/shadow
+          sudo chown root:shadow /etc/shadow
+          
+          # Check for users with empty passwords (security risk!)
+          sudo awk -F: '($2 == "") {print $1}' /etc/shadow
+          
+          # Check for users with no password aging
+          sudo awk -F: '($5 > 99999) {print $1}' /etc/shadow
+
+
 * Common commands:
+  
         # user management
   
         whoami                 # Shows current username
         id                     # Shows UID, GID, and groups
+        echo $USER             # Jsut user name
         useradd username       # Create a new user
         userdel username       # Delete a user
         passwd username        # Change password
-        
+        who or w               # Who is logged in right now
+          
         # Grouop Management:
         groups                  # Shows groups for current user
         groupadd groupname      # Create a new group
@@ -1122,5 +1437,21 @@ ls [!]
          │││ └└└── Group permissions
          └└└── User/Owner permissions
 
+* Commands on user ids:
 
+          # Check your own ID
+          id
+          
+          # Check specific user
+          id reddy
+          
+          # List all groups
+          groups reddy
+          
+          # Check if user can sudo
+          sudo -l -U reddy
+          
+          # List all users in admin group
+          dscl . -read /Groups/admin GroupMembership
+  
   
