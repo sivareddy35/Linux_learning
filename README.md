@@ -1000,9 +1000,127 @@ ls [!]
 <img width="244" height="32" alt="image" src="https://github.com/user-attachments/assets/94207807-5b9d-43ee-997f-c270901d45a3" />
    
 
-  <img width="565" height="201" alt="image" src="https://github.com/user-attachments/assets/bad18db5-23a4-4253-b91f-355b8f6c11d3" />
+    <img width="565" height="201" alt="image" src="https://github.com/user-attachments/assets/bad18db5-23a4-4253-b91f-355b8f6c11d3" />
 
-  <img width="705" height="240" alt="image" src="https://github.com/user-attachments/assets/1036f4f6-157b-479c-9b07-50d4ddf13a49" />
+    <img width="705" height="240" alt="image" src="https://github.com/user-attachments/assets/1036f4f6-157b-479c-9b07-50d4ddf13a49" />
+
+#### Types of files:
+ * `-` regular file
+ * `d` directory
+ * `b` blk device
+ * `c` char
+ * `l` linked file
+ * `s` socketfile
+ * `id`
+ * `pid` process id (what are commands/programs that are running identified by pid)
+ * `repoid` package management id is repo id
+ * `index number/inode number` (ls -il <filename> --> to check inode number) each file which we create in system has index number.
+ * each file has an unique inode number it is defined as table of indexes for all the uniqueness associated for each file. Which gives the information of the file except file name
+###### Hardlink file:
+* It is a backup file
+* Only applied to the files
+* If original file is deleted there is a backup
+* Inode number is same
+* Difficult to identify
+* It is stored only within the file system
+* Hard link can only be used if both files are on the same file system. The file system heirarchy can be madeup of multiple storage devices. Depending on the configuration of your system, when you change intp a new directory, that directory and its contents may be stored on a different file system. 
+###### Softlink file:
+* Softlink is a shortcut file
+* Can applied for files and directories
+* If original file is deleted there is no use of softlink file
+* Inode is different from the original file
+* Easy to identify
+* It can store any file system (nfs, mount, windows file system)
+
+  <img width="556" height="440" alt="image" src="https://github.com/user-attachments/assets/49ba3fca-4d17-44ef-a08c-8da39d152912" />
+
+* `copy` and `hardlink` both are different sice copy is used to copy the file from one location to another but in case of hardlink the same file get updated in the both places.
+
+  <img width="440" height="355" alt="image" src="https://github.com/user-attachments/assets/7c22b91c-33bb-4603-a7ca-20aac726e4bb" />
+
+  <img width="477" height="351" alt="image" src="https://github.com/user-attachments/assets/72067a3c-4d35-4163-9ab9-d03253ddebbf" />
+
+#### User Group Management:
+* Every one who login to computer is a user. User is used to authorize a person or to access system resources we add a user and user name is unique due to UID. 
+* Every file or folder in linux system is owned by a particular user.
+* Every process or running program run by a particular user.
+* `User` is an entity that can access the system and its resources. Every user has:
+  * A unique username(login name).
+  * A unique UID(User ID) - a numberic number
+  * A home directory (usually /home/username)
+  * A default shell (e.g., /bin/bash)
+* `Group` is a collection of users. Groups simplify permission management by allowing you to grant access to multiple users at once. Each group has:
+  * A unique group name
+  * A unique GID (Goup ID)
+  * A list of member users
+* `Users and Group purpose`:
+   * Security --> Isolate processes and data; users can only access what they have permitted.
+   * Access Control --> Define who can read, write or execute files and directories
+   * Accountability --> Track who did what on the system (auditing/logging)
+   * Resource Management --> Limit CPU, memory, disk usage per user
+   * Multi-user Support --> Allow multiple people to use the same sytem safe
+* `User typs in Unix`:
+  * 1. Root User (Super user):
+    * UID: 0
+    * Home directory is `/root` and all commands are stores in `/var/sbin`, default shell access to super user is `/bin/bash`
+    * Has unlimited access to the entire system
+    * Can modify any file, kill any perocess, change any setting
+    * Username is typically root
+  * 2.System User(Service Account)/ Network user:
+    * UID range: typically 1-99 (Varies by distribution)
+    * Created automatically for running services/daemons
+    * Examples: www-data, mysql, nginx, nobody, ftp, ldap, nfs, sambauser, apache
+    * Usually have no login shell (/usr/sbin/nologin or /bin/false)
+    * can't log in interactively
+  * 3. Normal/ Regular Users(Normal Users):
+    * UID range: typically 1000+, home directiory is `/home` and default shekll is `/bin/bash`
+    * The user added by super user.
+    * Limited permissions (can not typically system files)
+  * 4. Sudo User:
+    * In case admin is absent and the user want to install some packages 
+* Key files
+   
+      file           purpopse
+      /etc/passwd    User account information
+      /etc/shadow    Encrypted passwords (Restricted access)
+      /etc/group     Group definitions
+      /etc/gshadow   Group passwords(raralely used)
+
+* Example: `/etc/passwd` Entry
+      
+      username:x:1001:1001:Full Name:/home/username:/bin/bash
+         │     │   │    │      │           │            │
+         │     │   │    │      │           │            └── Default shell
+         │     │   │    │      │           └── Home directory
+         │     │   │    │      └── Comment (usually full name)
+         │     │   │    └── Primary GID
+         │     │   └── UID
+         │     └── Password placeholder (actual password in /etc/shadow)
+         └── Username
+* Common commands:
+        # user management
+  
+        whoami                 # Shows current username
+        id                     # Shows UID, GID, and groups
+        useradd username       # Create a new user
+        userdel username       # Delete a user
+        passwd username        # Change password
+        
+        # Grouop Management:
+        groups                  # Shows groups for current user
+        groupadd groupname      # Create a new group
+        usermod -aG group user  #  Add user to a group
+
+* Permission Model:
+  * Linux uses users and groups in its permission system:
+  
+        -rwxr-xr-- 1 alice developers 4096 Dec 4 10:00 script.sh
+         │││ │││ │││    │       │
+         │││ │││ │││    │       └── Group owner
+         │││ │││ │││    └── User owner
+         │││ │││ └└└── Others (everyone else)
+         │││ └└└── Group permissions
+         └└└── User/Owner permissions
 
 
-
+  
