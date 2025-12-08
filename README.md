@@ -746,7 +746,7 @@ ls [!]
       echo two three four five
       two three four five
 * **Entire Previous Command**:
-* 
+  
       $ cat /etc/shadow
       Permission denied
       
@@ -945,3 +945,756 @@ ls [!]
 * **Creating a soft link**:
   * `ln -s <source file> <destination>`
    
+        nsivareddy@X-J3PVH32KM4 ~ % cd  /Users/nsivareddy/practice/dir1 
+        nsivareddy@X-J3PVH32KM4 dir1 % vi test
+        there 
+        are 
+        some 
+        lines 
+        to test 
+        soft link 
+        
+        nsivareddy@X-J3PVH32KM4 dir1 % ls -l
+        total 8
+        -rw-r--r--  1 nsivareddy  staff  47  2 Dec 19:14 test
+        *  here 47 is size of the file
+        
+        
+        nsivareddy@X-J3PVH32KM4 ~ % ln -s /Users/nsivareddy/practice/dir1/test .
+        nsivareddy@X-J3PVH32KM4 ~ % ls -l test
+        lrwxr-xr-x  1 nsivareddy  staff  36  2 Dec 19:16 test -> /Users/nsivareddy/practice/dir1/test
+        
+        * Here l is link file, size of link file is equal to the no of characters in the name of original file.
+  * `nsivareddy@X-J3PVH32KM4 ~ % ln -s /Users/nsivareddy/practice/dir1/test test1` we don't need to specify the destination if we are in the same locationa and give any custom name or same name as oiginal file.
+  * `ln -s /Users/nsivareddy/practice/dir1/test /Users/nsivareddy/practice/softlink` here we are the current woking directory is different than source and destination however created a socftlink shortcut with `softlink` file under '/Users/nsivareddy/practice/' path.
+  * Softlink does not hold any data it is shortcut link to open for original file.
+  * When we delete the link we will only loose the access but the original file will be available but when we delete the original file the link exists but file can't be accessed.
+
+   <img width="556" height="204" alt="image" src="https://github.com/user-attachments/assets/15e3c3b9-b9ba-4062-aa7c-65c56d94a571" />
+* To delete link file use  `rm -rf <softlink name>`.
+* **Creating a soft link**:
+* `ln <source file> <destination>`
+* Incase if we don't want to loose the data once we delete a file or content hardlink backup will helps.
+* If we exit the original file the data is copied to backup file and if we make any changes to original file the same changes will be applicable in original file with the help of inode since both have same inode number.
+* If we update any of the original or hard link file both files will be auto updated.
+* We can find the number of hardlink after the file permissions but it will not show which is the hardlink file path.
+* Size of the both files is same with the same i node number.
+
+        nsivareddy@X-J3PVH32KM4 practice % ln file1.txt /Users/nsivareddy/practice/dir1/hard
+        
+        nsivareddy@X-J3PVH32KM4 practice % ls -la file1.txt 
+        -rw-r--r--  2 nsivareddy  staff  42  3 Dec 05:08 file1.txt
+        
+        nsivareddy@X-J3PVH32KM4 practice % ls -la /Users/nsivareddy/practice/dir1/hard
+        -rw-r--r--  2 nsivareddy  staff  42  3 Dec 05:08 /Users/nsivareddy/practice/dir1/hard
+* Both have same inode number.
+  
+        nsivareddy@X-J3PVH32KM4 practice % ls -i /Users/nsivareddy/practice/dir1/hard
+        51304437 /Users/nsivareddy/practice/dir1/hard
+        nsivareddy@X-J3PVH32KM4 practice % ls -i file1.txt
+        51304437 file1.txt
+* If we delete the original file the original file will be unaffected, the only change we can find is the number of links will be updated to 1 from1.
+* We can't find the hardlink files. The only one method to find hardlink is with `inode number`.
+* We can search the file with the same inode number to find hardlink files. `find / -inum <inode number>`
+
+<img width="244" height="32" alt="image" src="https://github.com/user-attachments/assets/94207807-5b9d-43ee-997f-c270901d45a3" />
+   
+
+    <img width="565" height="201" alt="image" src="https://github.com/user-attachments/assets/bad18db5-23a4-4253-b91f-355b8f6c11d3" />
+
+    <img width="705" height="240" alt="image" src="https://github.com/user-attachments/assets/1036f4f6-157b-479c-9b07-50d4ddf13a49" />
+
+#### Types of files:
+ * `-` regular file
+ * `d` directory
+ * `b` blk device
+ * `c` char
+ * `l` linked file
+ * `s` socketfile
+ * `id`
+ * `pid` process id (what are commands/programs that are running identified by pid)
+ * `repoid` package management id is repo id
+ * `index number/inode number` (ls -il <filename> --> to check inode number) each file which we create in system has index number.
+ * each file has an unique inode number it is defined as table of indexes for all the uniqueness associated for each file. Which gives the information of the file except file name
+###### Hardlink file:
+* It is a backup file
+* Only applied to the files
+* If original file is deleted there is a backup
+* Inode number is same
+* Difficult to identify
+* It is stored only within the file system
+* Hard link can only be used if both files are on the same file system. The file system heirarchy can be madeup of multiple storage devices. Depending on the configuration of your system, when you change intp a new directory, that directory and its contents may be stored on a different file system. 
+###### Softlink file:
+* Softlink is a shortcut file
+* Can applied for files and directories
+* If original file is deleted there is no use of softlink file
+* Inode is different from the original file
+* Easy to identify
+* It can store any file system (nfs, mount, windows file system)
+
+  <img width="556" height="440" alt="image" src="https://github.com/user-attachments/assets/49ba3fca-4d17-44ef-a08c-8da39d152912" />
+
+* `copy` and `hardlink` both are different sice copy is used to copy the file from one location to another but in case of hardlink the same file get updated in the both places.
+
+  <img width="440" height="355" alt="image" src="https://github.com/user-attachments/assets/7c22b91c-33bb-4603-a7ca-20aac726e4bb" />
+
+  <img width="477" height="351" alt="image" src="https://github.com/user-attachments/assets/72067a3c-4d35-4163-9ab9-d03253ddebbf" />
+
+#### User Group Management:
+* Every one who login to computer is a user. User is used to authorize a person or to access system resources we add a user and user name is unique due to UID. 
+* Every file or folder in linux system is owned by a particular user.
+* Every process or running program run by a particular user.
+* `User` is an entity that can access the system and its resources. Every user has:
+  * A unique username(login name).
+  * A unique UID(User ID) - a numberic number
+  * A home directory (usually /home/username)
+  * A default shell (e.g., /bin/bash)
+* `Group` is a collection of users. Groups simplify permission management by allowing you to grant access to multiple users at once. Each group has:
+  * A unique group name
+  * A unique GID (Goup ID)
+  * A list of member users
+* `Users and Group purpose`:
+   * Security --> Isolate processes and data; users can only access what they have permitted.
+   * Access Control --> Define who can read, write or execute files and directories
+   * Accountability --> Track who did what on the system (auditing/logging)
+   * Resource Management --> Limit CPU, memory, disk usage per user
+   * Multi-user Support --> Allow multiple people to use the same sytem safe
+* `User typs in Unix`:
+  * 1. Root User (Super user):
+    * UID: 0
+    * Home directory is `/root` and all commands are stores in `/var/sbin`, default shell access to super user is `/bin/bash`
+    * Has unlimited access to the entire system
+    * Can modify any file, kill any perocess, change any setting
+    * Username is typically root
+  * 2.System User(Service Account)/ Network user:
+    * UID range: typically 1-99 (Varies by distribution)
+    * Created automatically for running services/daemons
+    * Examples: www-data, mysql, nginx, nobody, ftp, ldap, nfs, sambauser, apache
+    * Usually have no login shell (/usr/sbin/nologin or /bin/false)
+    * can't log in interactively
+  * 3. Normal/ Regular Users(Normal Users):
+    * UID range: typically 1000+ upto 60000, home directiory is `/home` and default shekll is `/bin/bash`
+    * The user added by super user.
+    * Limited permissions (can not typically system files)
+  * 4. Sudo User:
+    * Sudouser is a normal user with root previlege. 
+    * In case admin is absent and the user want to install some packages/ want to create a d directory.
+  * To check the default login details for the user we can find under `vim /etc/login.defs`
+  * System account user id range is from 201 to 999
+* Key files
+   
+      file           purpopse
+      /etc/passwd    User account information
+      /etc/shadow    Encrypted passwords (Restricted access only for root)
+      /etc/group     Group definitions
+      /etc/gshadow   Group passwords(raralely used)
+      gettent passwd List all users including LDAP/network users
+* Detailed user Info:
+  
+      # Full details for specific user
+      getnent passwd reddy
+      # Finger (if installed)
+      finger reddy
+      
+      # Check user exists
+      id reddy
+      
+      # User's group
+      groups reddy
+
+* List Admin/Sudo Users:
+  
+      # Users in sudo group (Debian/Ubuntu)
+      getent group sudo
+      
+      # Users in wheel group (CentOS/RHEL/Fedora)
+      getent group wheel
+      
+      # Check sudoer file
+      sudo cat /etc/sudoers
+
+
+* `id username 2>/dev/null && echo "exists" || echo "not exists"` check if user name exists or not.
+* `last` last logins
+* `who`  currently loggedin
+* `sudo lastb` failed login attemps (security)
+* Example: `/etc/passwd` Entry
+  
+      username:password:UID:GID:comment:home:shell    
+      username:x:1001:1001:Full Name:/home/username:/bin/bash
+         │     │   │    │      │           │            │
+         │     │   │    │      │           │            └── Default shell
+         │     │   │    │      │           └── Home directory
+         │     │   │    │      └── Comment (usually full name)
+         │     │   │    └── Primary GID
+         │     │   └── UID
+         │     └── Password placeholder (actual password in /etc/shadow)
+         └── Username
+  
+* Modify the default: username:password:UID:GID:comment:home:shell
+  
+        cat /etc/shells                                   list all shells.
+        usermod -s /bin/sh <user_name>                    change default shellfor that particular user.
+        useradd -D                                        Give default home directory of the user info
+        usermod -d /<group_name>/<user_name> <user_name>  Change defult home directory
+        usermod -c "comment/group name" <user_name>       Chnage comment/ group name
+        usermod -u <custom_userID> <user_name>            Change deault user name
+        usermod -g <groupID> <user_name>                  Change default group
+        grep <user_name> /etc/shadow                      Check if the password is applied or not
+        passwd stdin <user_name>                          update password to the user
+        usermod -l <New_user_name> <old_user_name>        Changes user name
+  
+  * We need to change user id incase of ex. banking account to link all other service of the bank for a single user
+  * If `username:!!...` the user is not assigned password.
+  * This user name is required in case if we need to provide alias name in company mail id since every company will have their own website name. 
+  
+
+   <img width="496" height="440" alt="image" src="https://github.com/user-attachments/assets/3b815c44-ee46-4624-8f34-70a582402c45" />
+
+   <img width="803" height="650" alt="image" src="https://github.com/user-attachments/assets/b0863cbc-6dd5-4512-adf1-d95dc5de87df" />
+* **Question:** Add a user SivaReddy with uid 6000 gid 1000 comment dba homedir /visitors shell /bin/sh  passwd hkdgwhlkgw
+* mkdir /visitors
+* usermod -u 6000 -g 1000 -c "dba" -d /visitors -m -s /bin/bash sivareddy    ==> with m to copy home diredctory, default home directory changed to /visitors now
+* usermod -u 8443 -g 1000 -c "sa" -d /visitors/siva -s /bin/bash siva          ==> Now all users will be created by default in vistors directory
+* find / -user <user_name>              provides the user name path 
+* `useradd ram` is created in `/var/spool/mail/ram` location If we want to create a user and change the directiry. Wew need to modify `vim /default/useradd` after addingusers to visitors to home directory present in `/var/spool.mail` Since we didn't copy hidden files we will get errroas `Not copying file from skel directory into it` with `cp .b* /Visitors`.
+* No come out of the directory add user `useradd sam` and swicth sam user `sudo su - sam`pwd will give `/bvisitors/sam`.
+* User is not created inside home directory user login and user profiles all in inside `/etc/skel` folder it is recommend not to change.
+* We can chage in the default settings as nroot user , regualr user can't modify id it is sudo previlege users then after we need to copy all hidden files to that particular folder then whatever user we create it will not be created inside hoem directory and creates in custom directory.
+     
+  <img width="763" height="762" alt="image" src="https://github.com/user-attachments/assets/b51a16dc-4589-48df-861d-dd986dff0ea3" />
+* Normal user don't need to change default setting by default it would be `home`  but if we want to mount a network user ex LADP(Lightweight Directory Access Protocol) which is a protocol for acccessing and managing directory services - Centralized databasse storibng user accounts, groups and other organizational data.
+* LDAP user or samba users are not auto mounted inside home directory we have to create another directory.
+* To change the home directory of user using usermod command, instead of this we can modify `/etc/passwd` directory all thse 7 fields there.
+* Once the fiel got saved and switch the user
+* When a new user is added the user info is stored under `/etc/passwd` once the user is deleted only `/etc/passwd` will be delete with `userdel <username>` comand but it will not delete all places ie `home`,`skel` folder, `all hidden files` and `/var/spool/mail`  will remains and does not allow to recreate the same user as the user details remains in the other folders.
+* `userdel -r <user_name>` delete user name from all the locations.
+  
+  <img width="662" height="371" alt="image" src="https://github.com/user-attachments/assets/5ca63739-d508-4325-ac88-0902b5bbfadd" />
+
+* Once we edit `/etc/passwd` the skel and hidden directories are copied in RHEL8 but in RHEL7 we need to copy manually with `cp` command.
+  
+  <img width="504" height="331" alt="image" src="https://github.com/user-attachments/assets/f153dd49-4c02-45ca-8c5c-1e1921f04164" />
+
+
+* **/etc/passwd:**
+* This file stores encrypted passwords and password-related information for user accounts. It is readable by root user only.
+  
+        # Check permissions
+        ls -l /etc/shadow
+        # -rw-r----- 1 root shadow 1234 Dec 4 10:00 /etc/shadow
+* `File format:` Each line represnts one user with 9 fields separed by (:)
+  
+        username:password:lastchg:min:max:warn:inactive:expire:reserved
+        reddy:$6$xyz123$ABCdef.../...:19876:0:99999:7:::
+
+* `Field Breakdown`:
+  
+         #   Filed         Example                 Meaning
+  
+         1 Username        reddy                  Account name
+         2 Password        $6$xyz123$hash         Encrypted password
+         3 Last Change     19876                  Days Since Jan 1,1970 password was changed 
+         4 Min days        0                      Min days before password can be changed
+         5 Max days        99999                  Max days password is valid
+         6 Warn days       7                      Days before expiry account in warn user
+         7 Inactive                               Days after expiry account is disabled
+         8 Expire                                 Date account expires (days since epoch)
+         9 Reserved                               Reserved for future use
+* `Password Field Values`:
+
+        value                Meaning
+  
+        $6$xyz123$hash      SHA-512 encrypted password
+        $5$xyz123$hash      SHA-216 encrypted password
+        $1$xyz123$hash      MD5 encrypted (old, weak)
+        *                   Account disabled, no password login
+        !                   Account locked
+        !!                  Password neverset
+        !$6$...             Locked account(! prefix)
+        (empty)             No password required (dangerous)
+         
+* `Password Hash Prefixes`:
+  
+        Prefix        Algorithm
+        $1$           MD5
+        $5$           SHA-256
+        $6$           SHA-512 (recommended)
+        $y$           yescrypted(newer)
+* Real Exampple:
+  
+        sudo cat /etc/shadow
+  
+        root:$6$rounds=5000$saltsalt$longhashhere...:19800:0:99999:7:::  ==> root      --> has password
+        daemon:*:19500:0:99999:7:::                                      ==> daemon    --> Disabled(*)
+        nobody:*:19500:0:99999:7:::                                      ==> nobody    --> Diabled(*)
+        reddy:$6$aBcDef$xyz123hashvalue...:19876:0:99999:7:::            ==> reddy     --> Has password
+        john:!!:19850:0:99999:7:::                                       ==> john      --> Password never set(!!)
+        locked_user:!$6$salt$hash...:19800:0:99999:7:::                  ==> Locked_user --> Locked(! Prefix)
+* **Change /Update Password**:
+  * `Using passwd(recommended)`:
+    
+        # Change your own password
+        passwd
+        
+        # Change another user's password (as root)
+        sudo passwd reddy
+        
+        # Force user to change password on next login
+        sudo passwd -e reddy
+
+  * `Using chpasswd(Batch/Scripts)`:
+    
+        # Single user
+        echo "reddy:newpassword" | sudo chpasswd
+        
+        # Multiple users from file
+        sudo chpasswd < passwords.txt
+        
+        # With encrypted password
+        echo "reddy:$6$salt$hashedpassword" | sudo chpasswd -e
+  * `Using usermod`:
+    
+        # Set encrypted password directly
+        sudo usermod -p '$6$salt$hashedpassword' reddy
+
+
+* **Lock/Unlock Account:**
+  * Lock Account:
+    
+        # Method 1: passwd
+        sudo passwd -l reddy
+        
+        # Method 2: usermod
+        sudo usermod -L reddy
+        
+        # Verify (shows ! prefix)
+        sudo grep reddy /etc/shadow
+        # reddy:!$6$salt$hash...:19876:0:99999:7:::
+  * Unlock Account:
+   
+        # Method 1: passwd
+        sudo passwd -u reddy
+        
+        # Method 2: usermod
+        sudo usermod -U reddy
+
+* Password Aging/Expiry:
+** View Password info
+  
+      # check password status
+      sudo change -l reddy
+      
+  * Output: 
+      Last password change                    : Dec 04, 2025
+      Password expires                        : never
+      Password inactive                       : never
+      Account expires                         : never
+      Minimum number of days between changes  : 0
+      Maximum number of days between changes  : 99999
+      Warning days before password expires    : 7
+* Set Password Policies:
+  
+      # Force password change on next login
+      sudo chage -d 0 reddy
+      
+      # Set password expiry to 90 days
+      sudo chage -M 90 reddy
+      
+      # Set minimum days between changes
+      sudo chage -m 7 reddy
+      
+      # Set warning days before expiry
+      sudo chage -W 14 reddy
+      
+      # Set account expiration date
+      sudo chage -E 2025-12-31 reddy
+      
+      # Interactive mode
+      sudo chage reddy
+* Don't have access:
+ * Forget Root Password
+   * Single user mode(GRUB):
+     
+          # 1. Reboot and hold SHIFT to get GRUB menu
+          # 2. Press 'e' to edit boot entry
+          # 3. Find line starting with 'linux' and add at end:
+          init=/bin/bash
+          
+          # 4. Press Ctrl+X to boot
+          # 5. Remount filesystem as writable
+          mount -o remount,rw /
+          
+          # 6. Change password
+          passwd root
+          
+          # 7. Reboot
+          exec /sbin/init
+   * Recovery Mode(Ubuntu):
+     
+          # 1. Boot into recovery mode from GRUB
+          # 2. Select "root - Drop to root shell prompt"
+          # 3. Remount filesystem
+          mount -o remount,rw /
+          
+          # 4. Change password
+          passwd root
+          # or
+          passwd username
+          
+          # 5. Reboot
+          reboot
+
+    * Live USB:
+          # 1. Boot from Live USB
+          # 2. Mount the system partition
+          sudo mount /dev/sda1 /mnt
+          
+          # 3. Chroot into the system
+          sudo chroot /mnt
+          
+          # 4. Change password
+          passwd root
+          
+          # 5. Exit and reboot
+          exit
+          sudo reboot
+ * User Account Locked:
+   
+          # Check if locked
+          sudo passwd -S reddy
+          # reddy L 12/04/2025 0 99999 7 -1 (Password locked.)
+          
+          # Unlock
+          sudo passwd -u reddy
+          
+          # Or set new password (also unlocks)
+          sudo passwd reddy
+ * Password Never Set(!!):
+
+          # Set initial password
+          sudo passwd reddy
+ * No Sudo Access:
+   
+          # If you have physical access, use recovery mode (above)
+          
+          # If another admin exists, ask them to:
+          sudo passwd your_username
+          
+          # Or add you to sudo group
+          sudo usermod -aG sudo your_username  # Debian/Ubuntu
+          sudo usermod -aG wheel your_username  # CentOS/RHEL
+ * Quick Reference:
+   
+          sudo cat /etc/shadow              view shadow file
+          sudo passwd username              Change password
+          sudo passwd -l username           Lock account
+          sudo passwd -u username           Unlock account
+          sudo passwd -S username           Check p[assword status
+          sudo chage -l username            View expiry info
+          sudo chage -d 0 username          Force password change
+          sudo chage -M 90 username         Set max password age
+          openssl passwd -6 "password"      Generate passowrd hash
+          sudo vipw -s                      safe edit shadow 
+ * Security best practices:
+   
+          # Ensure correct permissions
+          sudo chmod 640 /etc/shadow
+          sudo chown root:shadow /etc/shadow
+          
+          # Check for users with empty passwords (security risk!)
+          sudo awk -F: '($2 == "") {print $1}' /etc/shadow
+          
+          # Check for users with no password aging
+          sudo awk -F: '($5 > 99999) {print $1}' /etc/shadow
+
+
+* Common commands:
+  
+        # user management
+  
+        whoami                 # Shows current username
+        id                     # Shows UID, GID, and groups
+        echo $USER             # Jsut user name
+        useradd username       # Create a new user
+        userdel username       # Delete a user
+        passwd username        # Change password
+        who or w               # Who is logged in right now
+          
+        # Grouop Management:
+        groups                  # Shows groups for current user
+        groupadd groupname      # Create a new group
+        usermod -aG group user  #  Add user to a group
+
+* Permission Model:
+  * Linux uses users and groups in its permission system:
+  
+        -rwxr-xr-- 1 alice developers 4096 Dec 4 10:00 script.sh
+         │││ │││ │││    │       │
+         │││ │││ │││    │       └── Group owner
+         │││ │││ │││    └── User owner
+         │││ │││ └└└── Others (everyone else)
+         │││ └└└── Group permissions
+         └└└── User/Owner permissions
+
+* Commands on user ids:
+
+          # Check your own ID
+          id
+          
+          # Check specific user
+          id reddy
+          
+          # List all groups
+          groups reddy
+          
+          # Check if user can sudo
+          sudo -l -U reddy
+          
+          # List all users in admin group
+          dscl . -read /Groups/admin GroupMembership
+  
+* * We can refer manual page of shadow with command `man 5 shadow` for detaled usage.
+* grep siva /etc/shadow
+* username:encrryptedPassword(!!): No of days lastpassword 1970: min days: max day: warniing: inactive
+* Min days are the number of days need beforec changing new password.
+* **Question:** Create user `bob` with 2112 uid and set password `trootent`
+        useradd -u 2112 bob
+        passwd --stdin bob
+
+#### Volume Groups in Linux(LVM):
+* Volume groups are key componets of LVM (Logical Volume Manager) in Linux.
+* `LVM` thee layer architecture:
+  
+       Logical Volume: Logical volumes (Lvs)  `/home, /var, /data, swap, etc.`
+       Volume Groups (VGs): Pool of storage from one or more PVs.
+       Physical Volumes (PVs): `/dev/sda1, /dev/sdb1, /dev/sdc, etc`
+       Physical Disks/Partitions: Actual Hardware storage
+* `Volume Group`:
+  * It is a storage pol that combines one or more Physical Volumes (PVs) into a single logical unit. Think it as a
+     * A container that holds multiple physical disks/partitions.
+     * A pool of storage from which you can carve out Logical Volumes.
+     * An abstration layer that allowds flexible disk management.
+  * `Key Benifits`:
+     * Aggeregate multiple disks into one large storage pool
+    * Resize volume dynamically without downtime.
+    * Add /remove disks from the pool on-the-fly.
+    * Snapshot capabitlities for backups.
+    * System file systems across multiple physical disk.
+  * `Steps to create Volume Group`: Need to have LVM too installed.
+
+        # Debian/Ubuntu
+        sudo apt install 
+        
+        # RHEL/CentOS/Fedora
+        sudo dnf install lvm2
+      
+        #Arch Linux
+        sudo pacman -5 
+   * 1. Identify Available Disks:
+            # List all block devices
+            lsblk
+            
+            # Example output:
+            # NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+            # sda      8:0    0   50G  0 disk
+            # ├─sda1   8:1    0    1G  0 part /boot
+            # └─sda2   8:2    0   49G  0 part /
+            # sdb      8:16   0  100G  0 disk          <- Available disk
+            # sdc      8:32   0  100G  0 disk          <- Available disk
+
+            # Alternative: list disks with fdisk
+            sudo fdisk -l
+  * 2. Create Physical Volumes(PVs): Before creating a Volume Group you need physical Volumes:
+
+            # Create PV on entire disk
+            sudo pvcreate /dev/sdb
+            sudo pvcreate /dev/sdc
+            
+            # Or create PV on a partition
+            sudo pvcreate /dev/sdb1
+            
+            # Example output:
+            #   Physical volume "/dev/sdb" successfully created.
+            #   Physical volume "/dev/sdc" successfully created.
+       
+            # List all Physical Volumes
+            sudo pvs
+            
+            # Example output:
+            #   PV         VG   Fmt  Attr PSize   PFree
+            #   /dev/sdb        lvm2 ---  100.00g 100.00g
+            #   /dev/sdc        lvm2 ---  100.00g 100.00g
+            
+            # Detailed PV info
+            sudo pvdisplay /dev/sdb
+   * 3. Create a Volume Group(VG):
+         
+            # Syntax: vgcreate <vg_name> <pv1> [pv2] [pv3] ...
+            
+            # Create VG with single PV
+            sudo vgcreate myvg /dev/sdb
+            
+            # Create VG with multiple PVs (combines storage)
+            sudo vgcreate data_vg /dev/sdb /dev/sdc
+            
+            # Example output:
+            #   Volume group "data_vg" successfully created
+   * With Custom Physical Volume (PE) size:
+     
+            # Default PE size is 4MB; you can customize it
+            sudo vgcreate -s 16M bigdata_vg /dev/sdb /dev/sdc
+
+* 4. Verify Volume Group:
+     
+            # List all Volume Groups
+            sudo vgs
+            
+            # Example output:
+            #   VG       #PV #LV #SN Attr   VSize   VFree
+            #   data_vg    2   0   0 wz--n- 199.99g 199.99g
+            
+            # Detailed VG information
+            sudo vgdisplay data_vg
+            
+            # Example output:
+            #   --- Volume group ---
+            #   VG Name               data_vg
+            #   System ID
+            #   Format                lvm2
+            #   VG Access             read/write
+            #   VG Status             resizable
+            #   MAX LV                0
+            #   Cur LV                0
+            #   Open LV               0
+            #   Max PV                0
+            #   Cur PV                2
+            #   Act PV                2
+            #   VG Size               199.99 GiB
+            #   PE Size               4.00 MiB
+            #   Total PE              51198
+            #   Alloc PE / Size       0 / 0
+            #   Free  PE / Size       51198 / 199.99 GiB
+ * Verify LVs:
+   
+            sudo lvs
+            
+            # Example output:
+            #   LV          VG      Attr       LSize  Pool Origin Data%  Meta%
+            #   projects_lv data_vg -wi-a----- 50.00g
+            #   backup_lv   data_vg -wi-a----- 149.99g
+ * 6. Create Filesystem and Mount:
+      
+             # Create filesystem on the Logical Volume
+            sudo mkfs.ext4 /dev/data_vg/projects_lv
+            
+            # Create mount point
+            sudo mkdir -p /mnt/projects
+            
+            # Mount the LV
+            sudo mount /dev/data_vg/projects_lv /mnt/projects
+            
+            # Verify
+            df -h /mnt/projects
+    * Add to /etc/fstab for persistent mounting:
+      
+            # Add this line to /etc/fstab
+            /dev/data_vg/projects_lv  /mnt/projects  ext4  defaults  0  2
+#### Create Volume Group Operations: 
+
+  * Extend a Volume Group(Add More Disks):
+            # Add a new disk to existing VG
+            sudo pvcreate /dev/sdd
+            sudo vgextend data_vg /dev/sdd
+            
+            # Verify increased size
+            sudo vgs data_vg
+
+  * Remove a Disk from Volume Group:
+   
+            # Move data off the PV first
+            sudo pvmove /dev/sdc
+            
+            # Remove PV from VG
+            sudo vgreduce data_vg /dev/sdc
+            
+            # Remove PV label
+            sudo pvremove /dev/sdc
+  * Rename a Volume Group:
+   
+            sudo vgrename data_vg storage_vg
+  * Remove a Volume Group:
+   
+            # First, unmount and remove all LVs
+            sudo umount /mnt/projects
+            sudo lvremove /dev/data_vg/projects_lv
+            
+            # Then remove the VG
+            sudo vgremove data_vg
+            
+            # Finally, remove PVs
+            sudo pvremove /dev/sdb /dev/sdc
+  * Activate/Deactivate Volume Group:
+     
+           # Deactivate VG
+            sudo vgchange -an data_vg
+            
+            # Activate VG
+            sudo vgchange -ay data_vg
+###### Complete Real-world Example:
+ * Here's a full workflow combining 3 disks into a storage pool:
+
+              #!/bin/bash
+              # Complete LVM Setup Script
+              
+              # Step 1: Create Physical Volumes
+              sudo pvcreate /dev/sdb /dev/sdc /dev/sdd
+              
+              # Step 2: Create Volume Group combining all PVs
+              sudo vgcreate storage_pool /dev/sdb /dev/sdc /dev/sdd
+              
+              # Step 3: Create Logical Volumes
+              sudo lvcreate -L 100G -n home_lv storage_pool
+              sudo lvcreate -L 50G -n var_lv storage_pool
+              sudo lvcreate -l 100%FREE -n data_lv storage_pool
+              
+              # Step 4: Create filesystems
+              sudo mkfs.ext4 /dev/storage_pool/home_lv
+              sudo mkfs.ext4 /dev/storage_pool/var_lv
+              sudo mkfs.xfs /dev/storage_pool/data_lv
+              
+              # Step 5: Create mount points and mount
+              sudo mkdir -p /mnt/{home,var,data}
+              sudo mount /dev/storage_pool/home_lv /mnt/home
+              sudo mount /dev/storage_pool/var_lv /mnt/var
+              sudo mount /dev/storage_pool/data_lv /mnt/data
+              
+              # Verify
+              echo "=== Physical Volumes ==="
+              sudo pvs
+              echo "=== Volume Groups ==="
+              sudo vgs
+              echo "=== Logical Volumes ==="
+              sudo lvs
+              echo "=== Mounted Filesystems ==="
+              df -h | grep storage_pool
+##### Quick Reference Commands:
+
+  <img width="534" height="420" alt="image" src="https://github.com/user-attachments/assets/ea42115f-84a4-4274-8e3c-a93d0b6f04ca" />
+
+#### Extend a Volume Group:
+* Extendinga volume group is actually a new PV to the volume group
+* To extend a volume group we need to create a new partition using `fdisk`. DOn't forget to change its hex code to be and upfate the partition table using `partprobe` command.
+* Create a PV on the newly created partition using `pvcreate` command.
+* Add this partition to `VG` using `vgextend`command, the syntax for it is
+      
+        vgextend <VG name> <PV name>
+        vgextend myvg /dev/sda8
+  
+* verify its `pvs` command
+  
+
+
+
+
+
