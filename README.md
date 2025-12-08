@@ -746,7 +746,7 @@ ls [!]
       echo two three four five
       two three four five
 * **Entire Previous Command**:
-* 
+  
       $ cat /etc/shadow
       Permission denied
       
@@ -1454,4 +1454,247 @@ ls [!]
           # List all users in admin group
           dscl . -read /Groups/admin GroupMembership
   
+* * We can refer manual page of shadow with command `man 5 shadow` for detaled usage.
+* grep siva /etc/shadow
+* username:encrryptedPassword(!!): No of days lastpassword 1970: min days: max day: warniing: inactive
+* Min days are the number of days need beforec changing new password.
+* **Question:** Create user `bob` with 2112 uid and set password `trootent`
+        useradd -u 2112 bob
+        passwd --stdin bob
+
+#### Volume Groups in Linux(LVM):
+* Volume groups are key componets of LVM (Logical Volume Manager) in Linux.
+* `LVM` thee layer architecture:
   
+       Logical Volume: Logical volumes (Lvs)  `/home, /var, /data, swap, etc.`
+       Volume Groups (VGs): Pool of storage from one or more PVs.
+       Physical Volumes (PVs): `/dev/sda1, /dev/sdb1, /dev/sdc, etc`
+       Physical Disks/Partitions: Actual Hardware storage
+* `Volume Group`:
+  * It is a storage pol that combines one or more Physical Volumes (PVs) into a single logical unit. Think it as a
+     * A container that holds multiple physical disks/partitions.
+     * A pool of storage from which you can carve out Logical Volumes.
+     * An abstration layer that allowds flexible disk management.
+  * `Key Benifits`:
+     * Aggeregate multiple disks into one large storage pool
+    * Resize volume dynamically without downtime.
+    * Add /remove disks from the pool on-the-fly.
+    * Snapshot capabitlities for backups.
+    * System file systems across multiple physical disk.
+  * `Steps to create Volume Group`: Need to have LVM too installed.
+
+        # Debian/Ubuntu
+        sudo apt install 
+        
+        # RHEL/CentOS/Fedora
+        sudo dnf install lvm2
+      
+        #Arch Linux
+        sudo pacman -5 
+   * 1. Identify Available Disks:
+            # List all block devices
+            lsblk
+            
+            # Example output:
+            # NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+            # sda      8:0    0   50G  0 disk
+            # ├─sda1   8:1    0    1G  0 part /boot
+            # └─sda2   8:2    0   49G  0 part /
+            # sdb      8:16   0  100G  0 disk          <- Available disk
+            # sdc      8:32   0  100G  0 disk          <- Available disk
+
+            # Alternative: list disks with fdisk
+            sudo fdisk -l
+  * 2. Create Physical Volumes(PVs): Before creating a Volume Group you need physical Volumes:
+
+            # Create PV on entire disk
+            sudo pvcreate /dev/sdb
+            sudo pvcreate /dev/sdc
+            
+            # Or create PV on a partition
+            sudo pvcreate /dev/sdb1
+            
+            # Example output:
+            #   Physical volume "/dev/sdb" successfully created.
+            #   Physical volume "/dev/sdc" successfully created.
+       
+            # List all Physical Volumes
+            sudo pvs
+            
+            # Example output:
+            #   PV         VG   Fmt  Attr PSize   PFree
+            #   /dev/sdb        lvm2 ---  100.00g 100.00g
+            #   /dev/sdc        lvm2 ---  100.00g 100.00g
+            
+            # Detailed PV info
+            sudo pvdisplay /dev/sdb
+   * 3. Create a Volume Group(VG):
+         
+            # Syntax: vgcreate <vg_name> <pv1> [pv2] [pv3] ...
+            
+            # Create VG with single PV
+            sudo vgcreate myvg /dev/sdb
+            
+            # Create VG with multiple PVs (combines storage)
+            sudo vgcreate data_vg /dev/sdb /dev/sdc
+            
+            # Example output:
+            #   Volume group "data_vg" successfully created
+   * With Custom Physical Volume (PE) size:
+     
+            # Default PE size is 4MB; you can customize it
+            sudo vgcreate -s 16M bigdata_vg /dev/sdb /dev/sdc
+
+* 4. Verify Volume Group:
+     
+            # List all Volume Groups
+            sudo vgs
+            
+            # Example output:
+            #   VG       #PV #LV #SN Attr   VSize   VFree
+            #   data_vg    2   0   0 wz--n- 199.99g 199.99g
+            
+            # Detailed VG information
+            sudo vgdisplay data_vg
+            
+            # Example output:
+            #   --- Volume group ---
+            #   VG Name               data_vg
+            #   System ID
+            #   Format                lvm2
+            #   VG Access             read/write
+            #   VG Status             resizable
+            #   MAX LV                0
+            #   Cur LV                0
+            #   Open LV               0
+            #   Max PV                0
+            #   Cur PV                2
+            #   Act PV                2
+            #   VG Size               199.99 GiB
+            #   PE Size               4.00 MiB
+            #   Total PE              51198
+            #   Alloc PE / Size       0 / 0
+            #   Free  PE / Size       51198 / 199.99 GiB
+ * Verify LVs:
+   
+            sudo lvs
+            
+            # Example output:
+            #   LV          VG      Attr       LSize  Pool Origin Data%  Meta%
+            #   projects_lv data_vg -wi-a----- 50.00g
+            #   backup_lv   data_vg -wi-a----- 149.99g
+ * 6. Create Filesystem and Mount:
+      
+             # Create filesystem on the Logical Volume
+            sudo mkfs.ext4 /dev/data_vg/projects_lv
+            
+            # Create mount point
+            sudo mkdir -p /mnt/projects
+            
+            # Mount the LV
+            sudo mount /dev/data_vg/projects_lv /mnt/projects
+            
+            # Verify
+            df -h /mnt/projects
+    * Add to /etc/fstab for persistent mounting:
+      
+            # Add this line to /etc/fstab
+            /dev/data_vg/projects_lv  /mnt/projects  ext4  defaults  0  2
+#### Create Volume Group Operations: 
+
+  * Extend a Volume Group(Add More Disks):
+            # Add a new disk to existing VG
+            sudo pvcreate /dev/sdd
+            sudo vgextend data_vg /dev/sdd
+            
+            # Verify increased size
+            sudo vgs data_vg
+
+  * Remove a Disk from Volume Group:
+   
+            # Move data off the PV first
+            sudo pvmove /dev/sdc
+            
+            # Remove PV from VG
+            sudo vgreduce data_vg /dev/sdc
+            
+            # Remove PV label
+            sudo pvremove /dev/sdc
+  * Rename a Volume Group:
+   
+            sudo vgrename data_vg storage_vg
+  * Remove a Volume Group:
+   
+            # First, unmount and remove all LVs
+            sudo umount /mnt/projects
+            sudo lvremove /dev/data_vg/projects_lv
+            
+            # Then remove the VG
+            sudo vgremove data_vg
+            
+            # Finally, remove PVs
+            sudo pvremove /dev/sdb /dev/sdc
+  * Activate/Deactivate Volume Group:
+     
+           # Deactivate VG
+            sudo vgchange -an data_vg
+            
+            # Activate VG
+            sudo vgchange -ay data_vg
+###### Complete Real-world Example:
+ * Here's a full workflow combining 3 disks into a storage pool:
+
+              #!/bin/bash
+              # Complete LVM Setup Script
+              
+              # Step 1: Create Physical Volumes
+              sudo pvcreate /dev/sdb /dev/sdc /dev/sdd
+              
+              # Step 2: Create Volume Group combining all PVs
+              sudo vgcreate storage_pool /dev/sdb /dev/sdc /dev/sdd
+              
+              # Step 3: Create Logical Volumes
+              sudo lvcreate -L 100G -n home_lv storage_pool
+              sudo lvcreate -L 50G -n var_lv storage_pool
+              sudo lvcreate -l 100%FREE -n data_lv storage_pool
+              
+              # Step 4: Create filesystems
+              sudo mkfs.ext4 /dev/storage_pool/home_lv
+              sudo mkfs.ext4 /dev/storage_pool/var_lv
+              sudo mkfs.xfs /dev/storage_pool/data_lv
+              
+              # Step 5: Create mount points and mount
+              sudo mkdir -p /mnt/{home,var,data}
+              sudo mount /dev/storage_pool/home_lv /mnt/home
+              sudo mount /dev/storage_pool/var_lv /mnt/var
+              sudo mount /dev/storage_pool/data_lv /mnt/data
+              
+              # Verify
+              echo "=== Physical Volumes ==="
+              sudo pvs
+              echo "=== Volume Groups ==="
+              sudo vgs
+              echo "=== Logical Volumes ==="
+              sudo lvs
+              echo "=== Mounted Filesystems ==="
+              df -h | grep storage_pool
+##### Quick Reference Commands:
+
+  <img width="534" height="420" alt="image" src="https://github.com/user-attachments/assets/ea42115f-84a4-4274-8e3c-a93d0b6f04ca" />
+
+#### Extend a Volume Group:
+* Extendinga volume group is actually a new PV to the volume group
+* To extend a volume group we need to create a new partition using `fdisk`. DOn't forget to change its hex code to be and upfate the partition table using `partprobe` command.
+* Create a PV on the newly created partition using `pvcreate` command.
+* Add this partition to `VG` using `vgextend`command, the syntax for it is
+      
+        vgextend <VG name> <PV name>
+        vgextend myvg /dev/sda8
+  
+* verify its `pvs` command
+  
+
+
+
+
+
